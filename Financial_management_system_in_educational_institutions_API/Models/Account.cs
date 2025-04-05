@@ -1,8 +1,12 @@
-﻿namespace Financial_management_system_in_educational_institutions_API.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Financial_management_system_in_educational_institutions_API.Models
 {
     public class Account
     {
-        //kur e krijojme nje tabele
+        [Key] //e caktojme qe te jet kolone si qeles primar
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] //e caktojme qe te jete identity column
         public int accId { get; set; }
         public string organisationName { get; set; }
         public string role { get; set; }
