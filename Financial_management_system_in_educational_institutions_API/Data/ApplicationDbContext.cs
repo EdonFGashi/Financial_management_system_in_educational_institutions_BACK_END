@@ -12,6 +12,8 @@ namespace Financial_management_system_in_educational_institutions_API.Data
         }
         public DbSet<Account> tblAccounts { get; set; }
         public DbSet<Person> tblPersons { get; set; }
+        public DbSet<Shkolla> tblShkolla { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
