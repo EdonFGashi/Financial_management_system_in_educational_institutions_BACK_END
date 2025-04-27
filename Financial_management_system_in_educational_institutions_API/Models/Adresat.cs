@@ -4,21 +4,24 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Financial_management_system_in_educational_institutions_API.Models
 {
-    [Table("Roles")]
-    public class Role
+    [Table("Adresat")]
+    public class Adresa
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required, StringLength(50)]
-        public string Name { get; set; }
+        [Required, StringLength(150)]
+        public string Rruga { get; set; }
 
         [Required, StringLength(100)]
-        public string Domain { get; set; }
+        public string Qyteti { get; set; }
 
-        [StringLength(250)]
-        public string? Description { get; set; }
+        [StringLength(100)]
+        public string? Shteti { get; set; }
+
+        [StringLength(20)]
+        public string? KodiPostal { get; set; }
 
         [Required]
         public DateTime CreatedAt { get; set; }
