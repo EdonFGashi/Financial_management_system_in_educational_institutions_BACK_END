@@ -1,5 +1,7 @@
+using Financial_management_system_in_educational_institutions_API;
 using Financial_management_system_in_educational_institutions_API.Data;
 using Financial_management_system_in_educational_institutions_API.Services;
+using Financial_management_system_in_educational_institutions_API.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +43,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<CacheService>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddScoped<IPorositeService, PorositeService>();
+
 
 //identiteti per autentikim
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -75,6 +80,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors();
 
 app.UseHttpsRedirection();
+app.UseAuthentication(); //per te perdorur autentikimin
 
 app.UseAuthorization();
 
