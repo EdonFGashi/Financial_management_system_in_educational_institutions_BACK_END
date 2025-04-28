@@ -4,6 +4,7 @@ using Financial_management_system_in_educational_institutions_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Financial_management_system_in_educational_institutions_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250428000344_IdentityTables")]
+    partial class IdentityTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,7 +61,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasKey("accId");
 
-                    b.ToTable("tblAccounts", (string)null);
+                    b.ToTable("tblAccounts");
 
                     b.HasData(
                         new
@@ -119,7 +122,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Adresat", (string)null);
+                    b.ToTable("Adresat");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.InventariAktual", b =>
@@ -160,7 +163,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("ShkollaId");
 
-                    b.ToTable("InventariAktual", (string)null);
+                    b.ToTable("InventariAktual");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Kompania", b =>
@@ -211,7 +214,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("PronariId");
 
-                    b.ToTable("Kompania", (string)null);
+                    b.ToTable("Kompania");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Komuna", b =>
@@ -283,7 +286,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("TenderiId");
 
-                    b.ToTable("Marreveshja", (string)null);
+                    b.ToTable("Marreveshja");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Ndalesat", b =>
@@ -322,7 +325,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("StafiShkollesId");
 
-                    b.ToTable("Ndalesat", (string)null);
+                    b.ToTable("Ndalesat");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.NdarjetBuxhetit", b =>
@@ -359,7 +362,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("ShkollaId");
 
-                    b.ToTable("NdarjetBuxhetit", (string)null);
+                    b.ToTable("NdarjetBuxhetit");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.OretShtese", b =>
@@ -396,7 +399,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("StafiShkollesId");
 
-                    b.ToTable("OretShtese", (string)null);
+                    b.ToTable("OretShtese");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Pagesat", b =>
@@ -432,7 +435,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("PorositeId");
 
-                    b.ToTable("Pagesat", (string)null);
+                    b.ToTable("Pagesat");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Person", b =>
@@ -469,7 +472,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasKey("numriPersonal");
 
-                    b.ToTable("tblPersons", (string)null);
+                    b.ToTable("tblPersons");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Porosite", b =>
@@ -511,7 +514,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("ShkollaId");
 
-                    b.ToTable("Porosite", (string)null);
+                    b.ToTable("Porosite");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Produkti", b =>
@@ -562,7 +565,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("KompaniaId");
 
-                    b.ToTable("Produkti", (string)null);
+                    b.ToTable("Produkti");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Role", b =>
@@ -595,7 +598,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Shkolla", b =>
@@ -647,7 +650,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("drejtori");
 
-                    b.ToTable("tblShkolla", (string)null);
+                    b.ToTable("tblShkolla");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.StafiShkolles", b =>
@@ -688,7 +691,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("shkollaId");
 
-                    b.ToTable("StafiShkolles", (string)null);
+                    b.ToTable("StafiShkolles");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Tenderi", b =>
@@ -721,7 +724,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tenderi", (string)null);
+                    b.ToTable("Tenderi");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

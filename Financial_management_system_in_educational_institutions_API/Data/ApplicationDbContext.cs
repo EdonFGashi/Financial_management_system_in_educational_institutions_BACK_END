@@ -1,10 +1,11 @@
 ﻿using System;
 using Financial_management_system_in_educational_institutions_API.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Financial_management_system_in_educational_institutions_API.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -38,6 +39,7 @@ namespace Financial_management_system_in_educational_institutions_API.Data
                     organisationName = "Rilindja",
                     role = "kompani",
                     username = "kompania1",
+                    email = "rilindja@gmail.com",
                     passwordHash = "324refds32q",
                     salt = "fdszx",
                     twoFAcode = 491593,
@@ -49,6 +51,7 @@ namespace Financial_management_system_in_educational_institutions_API.Data
                     organisationName = "Hasan Prishtina",
                     role = "universitet",
                     username = "kompania1",
+                    email = "hasanprishtina@gmail.com",
                     passwordHash = "vdsv2wqc2ws2",
                     salt = "adsyx",
                     twoFAcode = 154923,
@@ -57,6 +60,8 @@ namespace Financial_management_system_in_educational_institutions_API.Data
             );
 
             modelBuilder.Entity<Komuna>().ToTable("tblKomuna");
+
+            modelBuilder.Entity<Account>().ToTable("tblAccounts");
 
             modelBuilder.Entity<Komuna>()
                 .Property(k => k.buxhetiAktual)
