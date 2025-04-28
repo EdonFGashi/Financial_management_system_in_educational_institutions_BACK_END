@@ -10,6 +10,7 @@ namespace Financial_management_system_in_educational_institutions_API.Models
         public int accId { get; set; }
         public string organisationName { get; set; }
         public string role { get; set; }
+        public string email { get; set; }
         public string username { get; set; }
         public string passwordHash { get; set; }
         public string salt { get; set; }
