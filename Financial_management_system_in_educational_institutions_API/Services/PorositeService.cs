@@ -1,10 +1,9 @@
-// Services/PorositeService.cs
 using System;
 using System.Collections.Generic;
-using System.Linq;                    // for .Where(), .Contains()
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore; // for .Include()/.ThenInclude()
+using Microsoft.EntityFrameworkCore;
 using Financial_management_system_in_educational_institutions_API.Data;
 using Financial_management_system_in_educational_institutions_API.Models.Dto;
 using Financial_management_system_in_educational_institutions_API.Services.Interfaces;
@@ -53,14 +52,33 @@ namespace Financial_management_system_in_educational_institutions_API.Services
 
             if (!string.IsNullOrWhiteSpace(status))
             {
-                if (status.Equals("paguar", StringComparison.OrdinalIgnoreCase))
-                    query = query.Where(p => p.Paguar);
-                else if (status.Equals("fshire", StringComparison.OrdinalIgnoreCase))
-                    query = query.Where(p => !p.Paguar);
+                query = query.Where(p => p.Statusi.Equals(status, StringComparison.OrdinalIgnoreCase));
             }
 
             var entities = await query.ToListAsync();
             return _mapper.Map<IEnumerable<PorositeDto>>(entities);
+        }
+
+        public async Task<bool> PaguajPorosiAsync(int id)
+        {
+            var porosi = await _context.tblPorosite.FindAsync(id);
+            if (porosi == null) return false;
+
+            porosi.Statusi = "Paguar";
+            porosi.UpdatedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> FshijPorosiAsync(int id)
+        {
+            var porosi = await _context.tblPorosite.FindAsync(id);
+            if (porosi == null) return false;
+
+            porosi.Statusi = "Fshire";
+            porosi.UpdatedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

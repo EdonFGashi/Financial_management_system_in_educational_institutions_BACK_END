@@ -13,8 +13,9 @@ namespace Financial_management_system_in_educational_institutions_API
                 .ForMember(dest => dest.ShkollaEmri,
                            opt => opt.MapFrom(src => src.Shkolla.emriShkolles))
                 .ForMember(dest => dest.ProduktiEmri,
-                           opt => opt.MapFrom(src => src.Produkti.Emri));
-
+                           opt => opt.MapFrom(src => src.Produkti.Emri))
+                .ForMember(dest => dest.Statusi,
+                           opt => opt.MapFrom(src => src.Statusi)); 
         }
     }
 }

@@ -31,5 +31,23 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
                 pershkrimi, kompania, shkolla, data, status);
             return Ok(list);
         }
+        [HttpPatch("paguaj/{id}")]
+        public async Task<IActionResult> PaguajPorosi(int id)
+        {
+            var success = await _porositeService.PaguajPorosiAsync(id);
+            if (!success) return NotFound();
+
+            return Ok("Porosia u pagua me sukses!");
+        }
+
+        [HttpPatch("fshij/{id}")]
+        public async Task<IActionResult> FshijPorosi(int id)
+        {
+            var success = await _porositeService.FshijPorosiAsync(id);
+            if (!success) return NotFound();
+
+            return Ok("Porosia u fshi me sukses!");
+        }
+
     }
 }
