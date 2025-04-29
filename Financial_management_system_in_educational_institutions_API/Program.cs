@@ -44,7 +44,6 @@ builder.Services.AddCors(options => {
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();
-builder.Services.AddScoped<CacheService>();
 builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<IShkollaService, ShkollaService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
