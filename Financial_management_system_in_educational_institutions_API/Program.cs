@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Financial_management_system_in_educational_institutions_API.Services.Interfaces;
+using Financial_management_system_in_educational_institutions_API.Interfaces;
+using Financial_management_system_in_educational_institutions_API.Interfaces.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +45,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<CacheService>();
-
+builder.Services.AddScoped<ICacheService, CacheService>();
+builder.Services.AddScoped<IShkollaService, ShkollaService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddScoped<IPorositeService, PorositeService>();
 

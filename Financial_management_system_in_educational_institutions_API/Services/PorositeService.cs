@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 using Financial_management_system_in_educational_institutions_API.Data;
 using Financial_management_system_in_educational_institutions_API.Models.Dto;
-using Financial_management_system_in_educational_institutions_API.Services.Interfaces;
+using Financial_management_system_in_educational_institutions_API.Models.Shared;
+using Financial_management_system_in_educational_institutions_API.Interfaces;
 
 namespace Financial_management_system_in_educational_institutions_API.Services
 {
@@ -21,64 +18,85 @@ namespace Financial_management_system_in_educational_institutions_API.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<PorositeDto>> GetPorositeAsync(
+        public async Task<Response<List<PorositeDto>>> GetPorositeAsync(
             string? pershkrimi,
             string? kompania,
             string? shkolla,
             DateTime? data,
             string? status)
         {
-            var query = _context.tblPorosite
-                .Include(p => p.Shkolla)
-                .Include(p => p.Produkti)
-                    .ThenInclude(pr => pr.Kompania)
-                .AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(pershkrimi))
-                query = query.Where(p =>
-                    p.Produkti.Emri.Contains(pershkrimi));
-
-            if (!string.IsNullOrWhiteSpace(kompania))
-                query = query.Where(p =>
-                    p.Produkti.Kompania.Emri.Contains(kompania));
-
-            if (!string.IsNullOrWhiteSpace(shkolla))
-                query = query.Where(p =>
-                    p.Shkolla.emriShkolles.Contains(shkolla));
-
-            if (data.HasValue)
-                query = query.Where(p =>
-                    p.DataPorosise.Date == data.Value.Date);
-
-            if (!string.IsNullOrWhiteSpace(status))
+            try
             {
-                query = query.Where(p => p.Statusi.Equals(status, StringComparison.OrdinalIgnoreCase));
+                var query = _context.tblPorosite
+                    .Include(p => p.Shkolla)
+                    .Include(p => p.Produkti)
+                        .ThenInclude(pr => pr.Kompania)
+                    .AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(pershkrimi))
+                    query = query.Where(p => p.Produkti.Emri.Contains(pershkrimi));
+
+                if (!string.IsNullOrWhiteSpace(kompania))
+                    query = query.Where(p => p.Produkti.Kompania.Emri.Contains(kompania));
+
+                if (!string.IsNullOrWhiteSpace(shkolla))
+                    query = query.Where(p => p.Shkolla.emriShkolles.Contains(shkolla));
+
+                if (data.HasValue)
+                    query = query.Where(p => p.DataPorosise.Date == data.Value.Date);
+
+                if (!string.IsNullOrWhiteSpace(status))
+                    query = query.Where(p => p.Statusi.Equals(status, StringComparison.OrdinalIgnoreCase));
+
+                var porosite = await query.ToListAsync();
+                var resultDto = _mapper.Map<List<PorositeDto>>(porosite);
+
+                return new Response<List<PorositeDto>>(resultDto, true, "Porositë u kthyen me sukses.");
             }
-
-            var entities = await query.ToListAsync();
-            return _mapper.Map<IEnumerable<PorositeDto>>(entities);
+            catch (Exception ex)
+            {
+                return new Response<List<PorositeDto>>(null).InternalServerError($"Gabim gjatë marrjes së porosive: {ex.Message}");
+            }
         }
 
-        public async Task<bool> PaguajPorosiAsync(int id)
+        public async Task<Response<string>> PaguajPorosiAsync(int id)
         {
-            var porosi = await _context.tblPorosite.FindAsync(id);
-            if (porosi == null) return false;
+            try
+            {
+                var porosi = await _context.tblPorosite.FindAsync(id);
+                if (porosi == null)
+                    return new Response<string>(null).NotFound("Porosia nuk u gjet.");
 
-            porosi.Statusi = "Paguar";
-            porosi.UpdatedAt = DateTime.Now;
-            await _context.SaveChangesAsync();
-            return true;
+                porosi.Statusi = "Paguar";
+                porosi.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+                return new Response<string>("Porosia u pagua me sukses.");
+            }
+            catch (Exception ex)
+            {
+                return new Response<string>(null).InternalServerError($"Gabim gjatë pagesës: {ex.Message}");
+            }
         }
 
-        public async Task<bool> FshijPorosiAsync(int id)
+        public async Task<Response<string>> FshijPorosiAsync(int id)
         {
-            var porosi = await _context.tblPorosite.FindAsync(id);
-            if (porosi == null) return false;
+            try
+            {
+                var porosi = await _context.tblPorosite.FindAsync(id);
+                if (porosi == null)
+                    return new Response<string>(null).NotFound("Porosia nuk u gjet.");
 
-            porosi.Statusi = "Fshire";
-            porosi.UpdatedAt = DateTime.Now;
-            await _context.SaveChangesAsync();
-            return true;
+                porosi.Statusi = "Fshire";
+                porosi.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+                return new Response<string>("Porosia u fshi me sukses.");
+            }
+            catch (Exception ex)
+            {
+                return new Response<string>(null).InternalServerError($"Gabim gjatë fshirjes: {ex.Message}");
+            }
         }
     }
 }

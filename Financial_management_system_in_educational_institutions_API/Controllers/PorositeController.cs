@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Financial_management_system_in_educational_institutions_API.Services.Interfaces;
-using Financial_management_system_in_educational_institutions_API.Models.Dto;
+using Financial_management_system_in_educational_institutions_API.Interfaces;
+using Financial_management_system_in_educational_institutions_API.Models.Shared;
 
 namespace Financial_management_system_in_educational_institutions_API.Controllers
 {
@@ -15,39 +15,33 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             _porositeService = porositeService;
         }
 
-        /// <summary>
-        /// Gets the list of orders, with optional filters:
-        /// pershkrimi (product name), kompania, shkolla, data (yyyy-MM-dd), status (“paguar”/“fshire”).
-        /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PorositeDto>>> GetAll(
+        [ProducesResponseType(typeof(Response<List<PorositeDto>>), 200)]
+        public async Task<IActionResult> GetPorosite(
             [FromQuery] string? pershkrimi,
             [FromQuery] string? kompania,
             [FromQuery] string? shkolla,
             [FromQuery] DateTime? data,
             [FromQuery] string? status)
         {
-            var list = await _porositeService.GetPorositeAsync(
-                pershkrimi, kompania, shkolla, data, status);
-            return Ok(list);
+            var result = await _porositeService.GetPorositeAsync(pershkrimi, kompania, shkolla, data, status);
+            return StatusCode(result.StatusCode, result);
         }
-        [HttpPatch("paguaj/{id}")]
-        public async Task<IActionResult> PaguajPorosi(int id)
-        {
-            var success = await _porositeService.PaguajPorosiAsync(id);
-            if (!success) return NotFound();
 
-            return Ok("Porosia u pagua me sukses!");
+        [HttpPatch("paguaj/{id}")]
+        [ProducesResponseType(typeof(Response<string>), 200)]
+        public async Task<IActionResult> Paguaj(int id)
+        {
+            var result = await _porositeService.PaguajPorosiAsync(id);
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPatch("fshij/{id}")]
-        public async Task<IActionResult> FshijPorosi(int id)
+        [ProducesResponseType(typeof(Response<string>), 200)]
+        public async Task<IActionResult> Fshij(int id)
         {
-            var success = await _porositeService.FshijPorosiAsync(id);
-            if (!success) return NotFound();
-
-            return Ok("Porosia u fshi me sukses!");
+            var result = await _porositeService.FshijPorosiAsync(id);
+            return StatusCode(result.StatusCode, result);
         }
-
     }
 }
