@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Financial_management_system_in_educational_institutions_API.Interfaces;
 using Financial_management_system_in_educational_institutions_API.Models.Shared;
+using Financial_management_system_in_educational_institutions_API.Models.Dto;
 
 namespace Financial_management_system_in_educational_institutions_API.Controllers
 {
