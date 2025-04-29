@@ -1,5 +1,9 @@
 using Financial_management_system_in_educational_institutions_API.Data;
+using Financial_management_system_in_educational_institutions_API.Services.Shared;
 using Financial_management_system_in_educational_institutions_API.Services;
+using Financial_management_system_in_educational_institutions_API.Interfaces;
+using Financial_management_system_in_educational_institutions_API.Interfaces.Shared;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -40,7 +44,8 @@ builder.Services.AddCors(options => {
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();
-builder.Services.AddScoped<CacheService>();
+builder.Services.AddScoped<ICacheService, CacheService>();
+builder.Services.AddScoped<IShkollaService, ShkollaService>();
 
 //identiteti per autentikim
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
