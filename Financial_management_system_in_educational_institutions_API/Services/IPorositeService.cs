@@ -10,7 +10,7 @@ namespace Financial_management_system_in_educational_institutions_API.Services.I
             string? shkolla,
             DateTime? data,
             string? status);
-    }
+
         Task<bool> PaguajPorosiAsync(int id);
         Task<bool> FshijPorosiAsync(int id);
     }
