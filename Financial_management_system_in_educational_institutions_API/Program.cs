@@ -37,8 +37,9 @@ builder.Services.AddCors(options => {
 });
 
 
-
-
+builder.Services.AddLogging();
+builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -72,6 +73,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
         });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("IsAdmin", policy => policy.RequireClaim("role", "admin"));
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -83,10 +89,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 
+
 app.UseHttpsRedirection();
 app.UseAuthentication(); //per te perdorur autentikimin
 
-app.UseAuthorization();
+
+app.UseAuthentication(); //me jwtbearer
+app.UseAuthorization(); //me jwtbearer
 
 app.MapControllers();
 
