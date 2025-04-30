@@ -31,33 +31,7 @@ namespace Financial_management_system_in_educational_institutions_API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // 1) Seed data for Account
-            modelBuilder.Entity<Account>().HasData(
-                new Account
-                {
-                    accId = 1,
-                    organisationName = "Rilindja",
-                    role = "kompani",
-                    username = "kompania1",
-                    //email = "rilindja@gmail.com",
-                    passwordHash = "324refds32q",
-                    salt = "fdszx",
-                    twoFAcode = 491593,
-                    twoFAtime = DateTime.Now
-                },
-                new Account
-                {
-                    accId = 2,
-                    organisationName = "Hasan Prishtina",
-                    role = "universitet",
-                    username = "kompania1",
-                    //email = "hasanprishtina@gmail.com",
-                    passwordHash = "vdsv2wqc2ws2",
-                    salt = "adsyx",
-                    twoFAcode = 154923,
-                    twoFAtime = DateTime.Now
-                }
-            );
+           
 
             modelBuilder.Entity<Komuna>().ToTable("tblKomuna");
 
