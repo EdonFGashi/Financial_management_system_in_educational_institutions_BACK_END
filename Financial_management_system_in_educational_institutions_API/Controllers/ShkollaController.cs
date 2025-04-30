@@ -1,86 +1,65 @@
-using Financial_management_system_in_educational_institutions_API.Data;
+using Financial_management_system_in_educational_institutions_API.Interfaces;
 using Financial_management_system_in_educational_institutions_API.Models;
-using Financial_management_system_in_educational_institutions_API.Models.Dto;
+using Financial_management_system_in_educational_institutions_API.Models.Dto.Shkolla;
+using Financial_management_system_in_educational_institutions_API.Models.Shared;
+using Financial_management_system_in_educational_institutions_API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Financial_management_system_in_educational_institutions_API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class ShkollaController : ControllerBase
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IShkollaService _shkollaService;
 
-        public ShkollaController(ApplicationDbContext db)
+        public ShkollaController(IShkollaService shkollaService)
         {
-            _db = db;
+            _shkollaService = shkollaService;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Shkolla>> GetAll()
+        [ProducesResponseType(typeof(Response<List<Shkolla>>), 200)]
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_db.tblShkolla.ToList());
+            var result = await _shkollaService.GetAllAsync();
+            return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("{id:int}")]
-        public ActionResult<Shkolla> Get(int id)
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Response<Shkolla>), 200)]
+        [ProducesResponseType(typeof(Response<Shkolla>), 404)]
+        public async Task<IActionResult> GetById(int id)
         {
-            var shkolla = _db.tblShkolla.FirstOrDefault(s => s.shkollaId == id);
-            if (shkolla == null) return NotFound();
-            return Ok(shkolla);
+            var result = await _shkollaService.GetByIdAsync(id);
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPost]
-        public ActionResult<Shkolla> Create([FromBody] ShkollaDto dto)
+        [ProducesResponseType(typeof(Response<Shkolla>), 200)]
+        [ProducesResponseType(typeof(Response<Shkolla>), 400)]
+        public async Task<IActionResult> Create([FromBody] ShkollaDto shkollaDto)
         {
-            Shkolla model = new()
-            {
-                emriShkolles = dto.emriShkolles,
-                drejtori = dto.drejtori,
-                lokacioni = dto.lokacioni,
-                nrNxenesve = dto.nrNxenesve,
-                buxhetiAktual = dto.buxhetiAktual,
-                autoNdarja = dto.autoNdarja,
-                accId = dto.accId
-            };
-
-            _db.tblShkolla.Add(model);
-            _db.SaveChanges();
-
-            return CreatedAtAction(nameof(Get), new { id = model.shkollaId }, model);
+            var result = await _shkollaService.CreateAsync(shkollaDto);
+            return StatusCode(result.StatusCode, result);
         }
 
-        [HttpPut("{id:int}")]
-        public IActionResult Update(int id, [FromBody] ShkollaDto dto)
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(Response<Shkolla>), 200)]
+        [ProducesResponseType(typeof(Response<Shkolla>), 404)]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateShkollaDto updatedShkolla)
         {
-            if (id != dto.shkollaId) return BadRequest();
-
-            var model = new Shkolla
-            {
-                shkollaId = dto.shkollaId,
-                emriShkolles = dto.emriShkolles,
-                drejtori = dto.drejtori,
-                lokacioni = dto.lokacioni,
-                nrNxenesve = dto.nrNxenesve,
-                buxhetiAktual = dto.buxhetiAktual,
-                autoNdarja = dto.autoNdarja,
-                accId = dto.accId
-            };
-
-            _db.tblShkolla.Update(model);
-            _db.SaveChanges();
-            return NoContent();
+            var result = await _shkollaService.UpdateAsync(id, updatedShkolla);
+            return StatusCode(result.StatusCode, result);
         }
 
-        [HttpDelete("{id:int}")]
-        public IActionResult Delete(int id)
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(Response<string>), 200)]
+        [ProducesResponseType(typeof(Response<string>), 404)]
+        public async Task<IActionResult> Delete(int id)
         {
-            var shkolla = _db.tblShkolla.FirstOrDefault(s => s.shkollaId == id);
-            if (shkolla == null) return NotFound();
-
-            _db.tblShkolla.Remove(shkolla);
-            _db.SaveChanges();
-            return NoContent();
+            var result = await _shkollaService.DeleteAsync(id);
+            return StatusCode(result.StatusCode, result);
         }
     }
 }

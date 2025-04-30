@@ -18,7 +18,7 @@ namespace Financial_management_system_in_educational_institutions_API.Models
         public int Sasia { get; set; }
 
         [Required]
-        public bool Paguar { get; set; }
+        public string Statusi { get; set; } = "Ne Pritje"; // Default - to Ne Pritje
 
         [StringLength(250)]
         public string? Shenime { get; set; }
