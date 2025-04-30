@@ -44,7 +44,7 @@ namespace Financial_management_system_in_educational_institutions_API.Data
                     salt = "fdszx",
                     twoFAcode = 491593,
                     twoFAtime = DateTime.Now
-                },
+                },//testing
                 new Account
                 {
                     accId = 2,
