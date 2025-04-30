@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Financial_management_system_in_educational_institutions_API.Interfaces.Shared;
+using Microsoft.Extensions.Caching.Memory;
 
-namespace Financial_management_system_in_educational_institutions_API.Services
+namespace Financial_management_system_in_educational_institutions_API.Services.Shared
 {
-    public class CacheService
+    public class CacheService : ICacheService
     {
         private readonly IMemoryCache _cache;
 

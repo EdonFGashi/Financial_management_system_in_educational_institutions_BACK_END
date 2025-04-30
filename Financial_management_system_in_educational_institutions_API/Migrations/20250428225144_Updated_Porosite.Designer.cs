@@ -4,6 +4,7 @@ using Financial_management_system_in_educational_institutions_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Financial_management_system_in_educational_institutions_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250428225144_Updated_Porosite")]
+    partial class Updated_Porosite
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,7 +77,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                             role = "kompani",
                             salt = "fdszx",
                             twoFAcode = 491593,
-                            twoFAtime = new DateTime(2025, 4, 29, 13, 18, 53, 965, DateTimeKind.Local).AddTicks(111),
+                            twoFAtime = new DateTime(2025, 4, 29, 0, 51, 43, 975, DateTimeKind.Local).AddTicks(2069),
                             username = "kompania1"
                         },
                         new
@@ -86,7 +89,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                             role = "universitet",
                             salt = "adsyx",
                             twoFAcode = 154923,
-                            twoFAtime = new DateTime(2025, 4, 29, 13, 18, 53, 965, DateTimeKind.Local).AddTicks(345),
+                            twoFAtime = new DateTime(2025, 4, 29, 0, 51, 43, 975, DateTimeKind.Local).AddTicks(2125),
                             username = "kompania1"
                         });
                 });
