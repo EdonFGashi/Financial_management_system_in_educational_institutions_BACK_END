@@ -79,6 +79,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
                 organisationName = dto.organisationName,
                 role = dto.role,
                 username = dto.username,
+                email = dto.email,
                 passwordHash = dto.passwordHash,
                 salt = "",               // salti mavon
                 twoFAcode = dto.twoFAcode,
@@ -94,6 +95,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
                 organisationName = model.organisationName,
                 role = model.role,
                 username = model.username,
+                email = model.email,
                 passwordHash = model.passwordHash,
                 twoFAcode = model.twoFAcode,
                 twoFAtime = model.twoFAtime
