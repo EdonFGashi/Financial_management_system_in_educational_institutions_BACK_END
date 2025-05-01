@@ -1,7 +1,9 @@
 using Financial_management_system_in_educational_institutions_API.Data;
 using Financial_management_system_in_educational_institutions_API.Models;
 using Financial_management_system_in_educational_institutions_API.Models.Dto;
+using Financial_management_system_in_educational_institutions_API.Multitenancy;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Financial_management_system_in_educational_institutions_API.Controllers
 {
@@ -10,9 +12,12 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
     public class KomunaController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
-        public KomunaController(ApplicationDbContext db)
+        private readonly TenantSchemaInitializer _initializer;
+
+        public KomunaController(ApplicationDbContext db, TenantSchemaInitializer initializer)
         {
             _db = db;
+            _initializer = initializer;
         }
 
         // GET: api/Komuna
@@ -54,8 +59,12 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
 
         // POST: api/Komuna
         [HttpPost]
-        public ActionResult<KomunaDto> Create([FromBody] KomunaDto dto)
+        public async Task<ActionResult<KomunaDto>> Create([FromBody] KomunaDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.qyteti))
+                return BadRequest("Komuna name (qyteti) is required.");
+
+            // Step 1: Add to shared table
             var model = new Komuna
             {
                 qyteti = dto.qyteti,
@@ -66,12 +75,15 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             };
 
             _db.tblKomuna.Add(model);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
             dto.komunaId = model.komunaId;
-            return CreatedAtAction(nameof(Get),
-                                   new { id = dto.komunaId },
-                                   dto);
+
+            // Step 2: Create schema + run migration
+            var schema = dto.qyteti.Trim().ToLowerInvariant().Replace(" ", "_");
+            await _initializer.CreateSchemaAndMigrateAsync(schema);
+
+            return CreatedAtAction(nameof(Get), new { id = dto.komunaId }, dto);
         }
 
         // PUT: api/Komuna/5

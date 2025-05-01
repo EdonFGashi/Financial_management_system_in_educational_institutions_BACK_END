@@ -1,4 +1,5 @@
 ﻿using System;
+using Financial_management_system_in_educational_institutions_API.Interfaces;
 using Financial_management_system_in_educational_institutions_API.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,8 @@ namespace Financial_management_system_in_educational_institutions_API.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        private readonly string _schema;
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options,ITenantProvider tenantProvider)
             : base(options)
         { }
 
@@ -31,11 +33,27 @@ namespace Financial_management_system_in_educational_institutions_API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           
 
-            modelBuilder.Entity<Komuna>().ToTable("tblKomuna");
+            modelBuilder.HasDefaultSchema(_schema);
 
-            modelBuilder.Entity<Account>().ToTable("tblAccounts");
+            // Shared table
+            modelBuilder.Entity<Komuna>().ToTable("tblKomuna", "shared");
+
+            modelBuilder.Entity<Person>().ToTable("tblPersons", _schema);
+            modelBuilder.Entity<Shkolla>().ToTable("tblShkolla", _schema);
+            modelBuilder.Entity<Role>().ToTable("tblRoles", _schema);
+            modelBuilder.Entity<Adresa>().ToTable("tblAdresat", _schema);
+            modelBuilder.Entity<Kompania>().ToTable("tblKompania", _schema);
+            modelBuilder.Entity<Marreveshja>().ToTable("tblMarreveshja", _schema);
+            modelBuilder.Entity<Porosite>().ToTable("tblPorosite", _schema);
+            modelBuilder.Entity<InventariAktual>().ToTable("tblInventariAktual", _schema);
+            modelBuilder.Entity<NdarjetBuxhetit>().ToTable("tblNdarjetBuxhetit", _schema);
+            modelBuilder.Entity<OretShtese>().ToTable("tblOretShtese", _schema);
+            modelBuilder.Entity<Pagesat>().ToTable("tblPagesat", _schema);
+            modelBuilder.Entity<Tenderi>().ToTable("tblTenderi", _schema);
+            modelBuilder.Entity<Produkti>().ToTable("tblProdukti", _schema);
+            modelBuilder.Entity<StafiShkolles>().ToTable("tblStafiShkolles", _schema);
+            modelBuilder.Entity<Ndalesat>().ToTable("tblNdalesat", _schema);
 
             modelBuilder.Entity<Komuna>()
                 .Property(k => k.buxhetiAktual)
