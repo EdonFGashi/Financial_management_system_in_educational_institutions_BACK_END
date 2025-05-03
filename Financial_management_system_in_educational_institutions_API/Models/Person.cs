@@ -7,14 +7,15 @@ namespace Financial_management_system_in_educational_institutions_API.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int numriPersonal { get; set; }
+        public int NumriPersonal { get; set; }
 
-        public string emri { get; set; }
-        public string mbiemri { get; set; }
-        public string nacionaliteti { get; set; }
-        public string qyteti { get; set; }
-        public string shteti { get; set; }
-        public string gjinia { get; set; }
-        public DateTime dataLindjes { get; set; }
+        public string Emri { get; set; }
+        public string Mbiemri { get; set; }
+        public string Nacionaliteti { get; set; }
+        [Required, ForeignKey("Adresa")]
+        public int AdresaId { get; set; }
+        public Adresa Adresa { get; set; }
+        public string Gjinia { get; set; }
+        public DateTime DataLindjes { get; set; }
     }
 }
