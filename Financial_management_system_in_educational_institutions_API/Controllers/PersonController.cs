@@ -31,7 +31,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<Person> Get(int numriPersonal)
         {
-            var person = _db.tblPersons.FirstOrDefault(p => p.numriPersonal == numriPersonal);
+            var person = _db.tblPersons.FirstOrDefault(p => p.NumriPersonal == numriPersonal);
             if (person == null)
             {
                 return NotFound();
@@ -45,7 +45,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<Person> Create([FromBody] Person person)
         {
-            if (_db.tblPersons.Any(p => p.numriPersonal == person.numriPersonal))
+            if (_db.tblPersons.Any(p => p.NumriPersonal == person.NumriPersonal))
             {
                 ModelState.AddModelError("numriPersonal", "Person with this numriPersonal already exists.");
                 return BadRequest(ModelState);
@@ -53,7 +53,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
 
             _db.tblPersons.Add(person);
             _db.SaveChanges();
-            return CreatedAtAction(nameof(Get), new { numriPersonal = person.numriPersonal }, person);
+            return CreatedAtAction(nameof(Get), new { numriPersonal = person.NumriPersonal }, person);
         }
 
         // PUT: api/Person/123456789
@@ -62,7 +62,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Update(int numriPersonal, [FromBody] Person person)
         {
-            if (numriPersonal != person.numriPersonal)
+            if (numriPersonal != person.NumriPersonal)
             {
                 return BadRequest();
             }
@@ -78,7 +78,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Delete(int numriPersonal)
         {
-            var person = _db.tblPersons.FirstOrDefault(p => p.numriPersonal == numriPersonal);
+            var person = _db.tblPersons.FirstOrDefault(p => p.NumriPersonal == numriPersonal);
             if (person == null)
             {
                 return NotFound();

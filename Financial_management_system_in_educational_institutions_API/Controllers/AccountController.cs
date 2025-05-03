@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 
+// TODO: Delete this 
+
 namespace Financial_management_system_in_educational_institutions_API.Controllers
 {
     [Route("api/[controller]")]

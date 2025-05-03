@@ -1,10 +1,11 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Financial_management_system_in_educational_institutions_API.Models.Identity;
 
 namespace Financial_management_system_in_educational_institutions_API.Models
 {
-    [Table("Kompania")]
+    [Table("tblKompania")] // Schema will be set dynamically
     public class Kompania
     {
         [Key]
@@ -30,9 +31,11 @@ namespace Financial_management_system_in_educational_institutions_API.Models
         public int AdresaId { get; set; }
         public Adresa Adresa { get; set; }
 
-        [Required, ForeignKey("Account")]
-        public int AccountId { get; set; }
-        public Account Account { get; set; }
+        [Required]
+        public string UserId { get; set; }
+
+        [ForeignKey("UserId")]
+        public AppUser User { get; set; }
 
         [Required]
         public DateTime CreatedAt { get; set; }

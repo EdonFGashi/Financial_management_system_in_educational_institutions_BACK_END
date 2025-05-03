@@ -10,7 +10,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Text;
 using Financial_management_system_in_educational_institutions_API.Interfaces;
 using Financial_management_system_in_educational_institutions_API.Interfaces.Shared;
-using Financial_management_system_in_educational_institutions_API.Multitenancy; 
+using Financial_management_system_in_educational_institutions_API.Multitenancy;
+using Financial_management_system_in_educational_institutions_API.Models.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 // Access Configuration from builder
@@ -27,6 +28,7 @@ builder.Services.AddHttpContextAccessor(); // Needed for accessing claims in Use
 builder.Services.AddScoped<ITenantProvider, UserTenantProvider>();
 builder.Services.AddSingleton<IModelCacheKeyFactory, TenantModelCacheKeyFactory>();
 builder.Services.AddScoped<TenantSchemaInitializer>();
+builder.Services.AddScoped<TenantShkollaService>();
 
 // -------------------- CORS --------------------
 builder.Services.AddCors(options =>
@@ -56,7 +58,7 @@ builder.Services.AddScoped<IRaportiService, RaportiService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // -------------------- IDENTITY --------------------
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<AppUser, AppRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 

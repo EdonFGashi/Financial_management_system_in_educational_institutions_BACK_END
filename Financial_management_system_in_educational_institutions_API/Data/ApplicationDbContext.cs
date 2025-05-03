@@ -11,7 +11,10 @@ using Financial_management_system_in_educational_institutions_API.Models.Identit
 namespace Financial_management_system_in_educational_institutions_API.Data
 {
     public class ApplicationDbContext
-        : IdentityDbContext
+        : IdentityDbContext<AppUser, AppRole, string,
+                   AppUserClaim, AppUserRole, AppUserLogin,
+                   AppRoleClaim, AppUserToken>
+
     {
         private readonly string _schema;
         private readonly bool _isDesignTime;
@@ -43,24 +46,29 @@ namespace Financial_management_system_in_educational_institutions_API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Apply default schema only at runtime (optional fallback)
+            // Apply default schema dynamically — applies to tenant tables
             if (!_isDesignTime)
             {
                 modelBuilder.HasDefaultSchema(_schema);
             }
 
-            // ✅ Explicitly mapped Shared Tables
+            // Call base *before* your overrides
+            base.OnModelCreating(modelBuilder);
+
+            // ✅ Now override Identity table mappings
+            modelBuilder.Entity<AppUser>().ToTable("AspNetUsers", "shared");
+            modelBuilder.Entity<AppRole>().ToTable("AspNetRoles", "shared");
+            modelBuilder.Entity<AppUserRole>().ToTable("AspNetUserRoles", "shared");
+            modelBuilder.Entity<AppUserClaim>().ToTable("AspNetUserClaims", "shared");
+            modelBuilder.Entity<AppUserLogin>().ToTable("AspNetUserLogins", "shared");
+            modelBuilder.Entity<AppRoleClaim>().ToTable("AspNetRoleClaims", "shared");
+            modelBuilder.Entity<AppUserToken>().ToTable("AspNetUserTokens", "shared");
+
+            // ✅ Shared custom tables
             modelBuilder.Entity<Komuna>().ToTable("tblKomuna", "shared");
             modelBuilder.Entity<Account>().ToTable("tblAccounts", "shared");
 
-            // ✅ Shared ASP.NET Identity Tables (explicit schema)
-            //modelBuilder.Entity<IdentityUser>(e => { e.ToTable(name: "Users", schema: "shared");  });
-            //modelBuilder.Entity<IdentityRole>(e => { e.ToTable(name: "Roles", schema: "shared"); });
-            //modelBuilder.Entity<IdentityUserRole<string>>(e => { e.ToTable(name: "UserRoles", schema: "shared"); });
-            //modelBuilder.Entity<IdentityUserClaim<string>>(e => { e.ToTable(name: "UserClaims", schema: "shared"); });
-            //modelBuilder.Entity<IdentityUserLogin<string>>(e => { e.ToTable(name: "UserLogins", schema: "shared"); });
-            //modelBuilder.Entity<IdentityRoleClaim<string>>(e => { e.ToTable(name: "RoleClaims", schema: "shared"); });
-            //modelBuilder.Entity<IdentityUserToken<string>>(e => { e.ToTable(name: "UserTokens", schema: "shared"); });
+
 
             // ✅ Tenant Tables (explicit schema)
             modelBuilder.Entity<Person>().ToTable("tblPersons", _schema);
@@ -80,13 +88,19 @@ namespace Financial_management_system_in_educational_institutions_API.Data
             modelBuilder.Entity<Ndalesat>().ToTable("tblNdalesat", _schema);
 
             // ✅ Decimal Precision
-            modelBuilder.Entity<Komuna>().Property(k => k.buxhetiAktual).HasPrecision(18, 2);
+            modelBuilder.Entity<Komuna>().Property(k => k.BuxhetiAktual).HasPrecision(18, 2);
             modelBuilder.Entity<Shkolla>().Property(s => s.buxhetiAktual).HasPrecision(18, 2);
             modelBuilder.Entity<StafiShkolles>().Property(s => s.paga).HasPrecision(18, 2);
             modelBuilder.Entity<Ndalesat>().Property(n => n.ShumaNdaleses).HasPrecision(18, 2);
             modelBuilder.Entity<Pagesat>().Property(p => p.TVSH).HasPrecision(18, 2);
 
             // ✅ Relationships
+            modelBuilder.Entity<Porosite>()
+                .HasOne(p => p.Shkolla)
+                .WithMany()
+                .HasForeignKey(p => p.ShkollaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<StafiShkolles>()
                 .HasOne(s => s.Person)
                 .WithMany()
@@ -105,13 +119,37 @@ namespace Financial_management_system_in_educational_institutions_API.Data
                 .HasForeignKey(s => s.drejtori)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Shkolla>()
+                .HasOne<AppUser>()
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Marreveshja>()
                 .HasOne(m => m.Komuna)
                 .WithMany()
                 .HasForeignKey(m => m.KomunaId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            base.OnModelCreating(modelBuilder);
+                modelBuilder.Entity<Person>()
+                .HasOne(p => p.Adresa)
+                .WithMany()
+                .HasForeignKey(p => p.AdresaId)
+                .OnDelete(DeleteBehavior.Restrict); 
+
+            modelBuilder.Entity<Shkolla>()
+                .HasOne(s => s.Adresa)
+                .WithMany()
+                .HasForeignKey(s => s.AdresaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Shkolla>()
+                .HasOne(s => s.User)
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
         }
     }
     }

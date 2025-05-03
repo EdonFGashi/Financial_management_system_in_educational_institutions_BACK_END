@@ -1,4 +1,4 @@
-﻿namespace MovieAPI.DTOs
+﻿namespace Financial_management_system_in_educational_institutions_API.DTOs
 {
     public class PaginationDTO
     {

@@ -1,7 +1,7 @@
 ﻿
-using MovieAPI.DTOs;
+using Financial_management_system_in_educational_institutions_API.DTOs;
 
-namespace MovieAPI.Helpers
+namespace Financial_management_system_in_educational_institutions_API.Helpers
 {
     public static class IQueryableExtensions
     {
