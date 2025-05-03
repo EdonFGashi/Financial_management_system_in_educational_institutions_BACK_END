@@ -1,17 +1,27 @@
 ﻿using System;
 using Financial_management_system_in_educational_institutions_API.Interfaces;
 using Financial_management_system_in_educational_institutions_API.Models;
+using Financial_management_system_in_educational_institutions_API.Multitenancy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Financial_management_system_in_educational_institutions_API.Models.Identity;
+
 
 namespace Financial_management_system_in_educational_institutions_API.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext
+        : IdentityDbContext
     {
         private readonly string _schema;
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options,ITenantProvider tenantProvider)
+        private readonly bool _isDesignTime;
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ITenantProvider tenantProvider)
             : base(options)
-        { }
+        {
+            _schema = tenantProvider.GetSchema();
+            _isDesignTime = tenantProvider is StaticTenantProvider; // Detect if it's being used during design-time
+        }
 
         public DbSet<Account> tblAccounts { get; set; }
         public DbSet<Person> tblPersons { get; set; }
@@ -33,12 +43,26 @@ namespace Financial_management_system_in_educational_institutions_API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Apply default schema only at runtime (optional fallback)
+            if (!_isDesignTime)
+            {
+                modelBuilder.HasDefaultSchema(_schema);
+            }
 
-            modelBuilder.HasDefaultSchema(_schema);
-
-            // Shared table
+            // ✅ Explicitly mapped Shared Tables
             modelBuilder.Entity<Komuna>().ToTable("tblKomuna", "shared");
+            modelBuilder.Entity<Account>().ToTable("tblAccounts", "shared");
 
+            // ✅ Shared ASP.NET Identity Tables (explicit schema)
+            //modelBuilder.Entity<IdentityUser>(e => { e.ToTable(name: "Users", schema: "shared");  });
+            //modelBuilder.Entity<IdentityRole>(e => { e.ToTable(name: "Roles", schema: "shared"); });
+            //modelBuilder.Entity<IdentityUserRole<string>>(e => { e.ToTable(name: "UserRoles", schema: "shared"); });
+            //modelBuilder.Entity<IdentityUserClaim<string>>(e => { e.ToTable(name: "UserClaims", schema: "shared"); });
+            //modelBuilder.Entity<IdentityUserLogin<string>>(e => { e.ToTable(name: "UserLogins", schema: "shared"); });
+            //modelBuilder.Entity<IdentityRoleClaim<string>>(e => { e.ToTable(name: "RoleClaims", schema: "shared"); });
+            //modelBuilder.Entity<IdentityUserToken<string>>(e => { e.ToTable(name: "UserTokens", schema: "shared"); });
+
+            // ✅ Tenant Tables (explicit schema)
             modelBuilder.Entity<Person>().ToTable("tblPersons", _schema);
             modelBuilder.Entity<Shkolla>().ToTable("tblShkolla", _schema);
             modelBuilder.Entity<Role>().ToTable("tblRoles", _schema);
@@ -55,28 +79,14 @@ namespace Financial_management_system_in_educational_institutions_API.Data
             modelBuilder.Entity<StafiShkolles>().ToTable("tblStafiShkolles", _schema);
             modelBuilder.Entity<Ndalesat>().ToTable("tblNdalesat", _schema);
 
-            modelBuilder.Entity<Komuna>()
-                .Property(k => k.buxhetiAktual)
-                .HasPrecision(18, 2);
+            // ✅ Decimal Precision
+            modelBuilder.Entity<Komuna>().Property(k => k.buxhetiAktual).HasPrecision(18, 2);
+            modelBuilder.Entity<Shkolla>().Property(s => s.buxhetiAktual).HasPrecision(18, 2);
+            modelBuilder.Entity<StafiShkolles>().Property(s => s.paga).HasPrecision(18, 2);
+            modelBuilder.Entity<Ndalesat>().Property(n => n.ShumaNdaleses).HasPrecision(18, 2);
+            modelBuilder.Entity<Pagesat>().Property(p => p.TVSH).HasPrecision(18, 2);
 
-            modelBuilder.Entity<Shkolla>()
-                .Property(s => s.buxhetiAktual)
-                .HasPrecision(18, 2);
-
-            modelBuilder.Entity<StafiShkolles>()
-                .Property(s => s.paga)
-                .HasPrecision(18, 2);
-
-            modelBuilder.Entity<Ndalesat>()
-                .Property(n => n.ShumaNdaleses)
-                .HasPrecision(18, 2);
-
-            modelBuilder.Entity<Pagesat>()
-                .Property(p => p.TVSH)
-                .HasPrecision(18, 2);
-
-
-
+            // ✅ Relationships
             modelBuilder.Entity<StafiShkolles>()
                 .HasOne(s => s.Person)
                 .WithMany()
@@ -104,4 +114,4 @@ namespace Financial_management_system_in_educational_institutions_API.Data
             base.OnModelCreating(modelBuilder);
         }
     }
-}
+    }

@@ -80,7 +80,9 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             dto.komunaId = model.komunaId;
 
             // Step 2: Create schema + run migration
+            
             var schema = dto.qyteti.Trim().ToLowerInvariant().Replace(" ", "_");
+            Console.WriteLine($"[KomunaController] Creating schema: {schema}");
             await _initializer.CreateSchemaAndMigrateAsync(schema);
 
             return CreatedAtAction(nameof(Get), new { id = dto.komunaId }, dto);
