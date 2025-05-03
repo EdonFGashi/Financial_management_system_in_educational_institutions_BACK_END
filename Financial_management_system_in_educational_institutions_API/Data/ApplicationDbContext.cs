@@ -36,6 +36,11 @@ namespace Financial_management_system_in_educational_institutions_API.Data
             modelBuilder.Entity<Komuna>().ToTable("tblKomuna");
 
             modelBuilder.Entity<Account>().ToTable("tblAccounts");
+            modelBuilder.Entity<Produkti>().ToTable("Produkti");
+            
+            modelBuilder.Entity<Produkti>()
+            .Property(p => p.Fotografia)
+            .HasMaxLength(1000);
 
             modelBuilder.Entity<Komuna>()
                 .Property(k => k.buxhetiAktual)
@@ -84,6 +89,21 @@ namespace Financial_management_system_in_educational_institutions_API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);
+
+            
+            //    //Test purposes
+            //modelBuilder.Entity<Kompania>().HasData(new Kompania
+            //{
+            //    Id = 1,
+            //    Emri = "TestKompania",
+            //    PronariId = 1,
+            //    Sherbimi = "Kompania për testim",
+            //    Email = "test@kompania.com",
+            //    NrTelefonit = "123456789",
+            //    Lokacioni = "Prishtinë",
+            //    CreatedAt = DateTime.Now,
+            //    UpdatedAt = DateTime.Now
+            //});
         }
     }
 }

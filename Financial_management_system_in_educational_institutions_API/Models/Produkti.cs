@@ -29,7 +29,7 @@ namespace Financial_management_system_in_educational_institutions_API.Models
         [StringLength(100)]
         public string? Prodhuesi { get; set; }
 
-        [StringLength(200)]
+        [MaxLength(1000)]
         public string? Fotografia { get; set; }
 
         [Required, ForeignKey("Kompania")]

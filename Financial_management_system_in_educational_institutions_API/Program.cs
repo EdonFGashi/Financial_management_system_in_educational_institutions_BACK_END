@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Financial_management_system_in_educational_institutions_API.Interfaces;
 using Financial_management_system_in_educational_institutions_API.Interfaces.Shared;
+using Financial_management_system_in_educational_institutions_API.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +38,8 @@ builder.Services.AddCors(options => {
 });
 
 
+
+
 builder.Services.AddLogging();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllers();
@@ -50,6 +53,8 @@ builder.Services.AddScoped<IShkollaService, ShkollaService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddScoped<IPorositeService, PorositeService>();
 builder.Services.AddScoped<IRaportiService, RaportiService>();
+builder.Services.AddScoped<IProduktiService, ProduktiService>();
+
 
 
 //identiteti per autentikim
