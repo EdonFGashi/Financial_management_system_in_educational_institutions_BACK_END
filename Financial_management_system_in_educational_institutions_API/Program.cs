@@ -53,6 +53,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<IShkollaService, ShkollaService>();
+builder.Services.AddScoped<IKompaniaService, KompaniaService>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 builder.Services.AddScoped<IPorositeService, PorositeService>();
 builder.Services.AddScoped<IRaportiService, RaportiService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));

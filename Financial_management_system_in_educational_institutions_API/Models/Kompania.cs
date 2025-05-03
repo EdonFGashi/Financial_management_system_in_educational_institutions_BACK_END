@@ -22,9 +22,6 @@ namespace Financial_management_system_in_educational_institutions_API.Models
         [Required, StringLength(100)]
         public string Sherbimi { get; set; }
 
-        [StringLength(200)]
-        public string? Lokacioni { get; set; }
-
         public int NrXhirologaris { get; set; }
 
         [Required, ForeignKey("Adresa")]
