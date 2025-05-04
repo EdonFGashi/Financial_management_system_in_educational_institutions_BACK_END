@@ -6,7 +6,6 @@
         public string pozita { get; set; }
         public decimal paga { get; set; }
         public int numriOreve { get; set; }
-        public int shkollaId { get; set; }
 
     }
 }

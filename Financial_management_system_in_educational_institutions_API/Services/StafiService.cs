@@ -1,105 +1,83 @@
 ﻿using Financial_management_system_in_educational_institutions_API.Data;
 using Financial_management_system_in_educational_institutions_API.DTOs;
-using Financial_management_system_in_educational_institutions_API.Models.Shared;
 using Financial_management_system_in_educational_institutions_API.Models;
-using Financial_management_system_in_educational_institutions_API.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using Financial_management_system_in_educational_institutions_API.Models.Shared;
 using Financial_management_system_in_educational_institutions_API.Models.Dto.Shkolla.Stafi;
-
+using Financial_management_system_in_educational_institutions_API.Multitenancy;
+using Microsoft.EntityFrameworkCore;
+using Financial_management_system_in_educational_institutions_API.Interfaces;
 
 public class StafiService : IStafiService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IConfiguration _configuration;
+    private readonly ILogger<StafiService> _logger;
 
-    public StafiService(ApplicationDbContext context)
+    public StafiService(IConfiguration configuration, ILogger<StafiService> logger)
     {
-        _context = context;
+        _configuration = configuration;
+        _logger = logger;
     }
 
-    public async Task<PaginatedResponse<StafiShkolles>> GetAllPaginatedAsync(PaginationDTO paginationDto)
+    private ApplicationDbContext GetContext(string schemaName)
     {
+        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseSqlServer(_configuration.GetConnectionString("DefaultSQLConnection"));
+
+        var tenantProvider = new StaticTenantProvider(schemaName);
+        return new ApplicationDbContext(optionsBuilder.Options, tenantProvider);
+    }
+
+    public async Task<PaginatedResponse<StafiShkolles>> GetAllPaginatedAsync(string schemaName, PaginationDTO paginationDto)
+    {
+        await using var context = GetContext(schemaName);
+
         try
         {
-            var query = _context.tblStafiShkolles
+            var query = context.tblStafiShkolles
                 .Include(s => s.Person)
                 .Include(s => s.Shkolla)
                 .AsQueryable();
 
             var totalRecords = await query.CountAsync();
-
             var pagedData = await query
                 .Skip((paginationDto.Page - 1) * paginationDto.RecordsPerPage)
                 .Take(paginationDto.RecordsPerPage)
                 .ToListAsync();
 
-            if (pagedData is not null)
-            {
-
-                return new PaginatedResponse<StafiShkolles>(
-                    pagedData,
-                    paginationDto.Page,
-                    paginationDto.RecordsPerPage,
-                    totalRecords,
-                    "Lista e stafit u kthye me sukses"
-                );
-            }
-
             return new PaginatedResponse<StafiShkolles>(
-                    new List<StafiShkolles>(),
-                    paginationDto.Page,
-                    paginationDto.RecordsPerPage,
-                    totalRecords,
-                    "Nuk ka te dhena"
+                pagedData,
+                paginationDto.Page,
+                paginationDto.RecordsPerPage,
+                totalRecords,
+                "Lista e stafit u kthye me sukses"
             );
         }
         catch (Exception ex)
         {
-            var emptyResponse = new PaginatedResponse<StafiShkolles>(
+            _logger.LogError(ex, "Error while retrieving paginated staff list");
+            return new PaginatedResponse<StafiShkolles>(
                 new List<StafiShkolles>(),
                 paginationDto.Page,
                 paginationDto.RecordsPerPage,
                 0
-            );
-
-            return emptyResponse.InternalServerError(ex.Message);
+            ).InternalServerError(ex.Message);
         }
-
     }
 
-    public async Task<Response<List<StafiShkolles>>> GetAllAsync()
+    public async Task<Response<StafiShkolles>> CreateAsync(string schemaName, CreateStafiShkollesDto dto)
     {
+        await using var context = GetContext(schemaName);
+
         try
         {
-            var data = await _context.tblStafiShkolles
-                .Include(s => s.Person)
-                .Include(s => s.Shkolla)
-                .ToListAsync();
+            var personExists = await context.tblPersons.AnyAsync(p => p.NumriPersonal == dto.numriPersonal);
+            if (!personExists)
+                return new Response<StafiShkolles>(null).BadRequest("Personi nuk ekziston.");
 
-            return new Response<List<StafiShkolles>>(data, true, "Lista u kthye me sukses");
-        }
-        catch (Exception ex)
-        {
-            return new Response<List<StafiShkolles>>(null).InternalServerError(ex.Message);
-        }
-    }
+            var shkollaExists = await context.tblShkolla.AnyAsync(s => s.shkollaId == dto.shkollaId);
+            if (!shkollaExists)
+                return new Response<StafiShkolles>(null).BadRequest("Shkolla nuk ekziston.");
 
-    public async Task<Response<StafiShkolles>> GetByIdAsync(int id)
-    {
-        var stafi = await _context.tblStafiShkolles
-            .Include(s => s.Person)
-            .Include(s => s.Shkolla)
-            .FirstOrDefaultAsync(s => s.Id == id);
-
-        if (stafi == null)
-            return new Response<StafiShkolles>(null).NotFound("Stafi nuk u gjet");
-
-        return new Response<StafiShkolles>(stafi, true, "Stafi u gjet me sukses");
-    }
-
-    public async Task<Response<StafiShkolles>> CreateAsync(CreateStafiShkollesDto dto)
-    {
-        try
-        {
             var stafi = new StafiShkolles
             {
                 numriPersonal = dto.numriPersonal,
@@ -110,20 +88,24 @@ public class StafiService : IStafiService
                 createdAt = DateTime.UtcNow
             };
 
-            _context.tblStafiShkolles.Add(stafi);
-            await _context.SaveChangesAsync();
+            context.tblStafiShkolles.Add(stafi);
+            await context.SaveChangesAsync();
 
+            _logger.LogInformation("Stafi u krijua me sukses në skemën '{Schema}'", schemaName);
             return new Response<StafiShkolles>(stafi, true, "Stafi u krijua me sukses");
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Gabim gjatë krijimit të stafit në skemën '{Schema}'", schemaName);
             return new Response<StafiShkolles>(null).InternalServerError(ex.Message);
         }
     }
 
-    public async Task<Response<StafiShkolles>> UpdateAsync(int id, UpdateStafiShkollesDto dto)
+    public async Task<Response<StafiShkolles>> UpdateAsync(string schemaName, int id, UpdateStafiShkollesDto dto)
     {
-        var existing = await _context.tblStafiShkolles.FindAsync(id);
+        await using var context = GetContext(schemaName);
+
+        var existing = await context.tblStafiShkolles.FindAsync(id);
         if (existing == null)
             return new Response<StafiShkolles>(null).NotFound("Stafi nuk u gjet");
 
@@ -131,22 +113,59 @@ public class StafiService : IStafiService
         existing.pozita = dto.pozita;
         existing.paga = dto.paga;
         existing.numriOreve = dto.numriOreve;
-        existing.shkollaId = dto.shkollaId;
         existing.updatedAt = DateTime.UtcNow;
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         return new Response<StafiShkolles>(existing, true, "Stafi u përditësua me sukses");
     }
 
-    public async Task<Response<string>> DeleteAsync(int id)
+    public async Task<Response<string>> DeleteAsync(string schemaName, int id)
     {
-        var stafi = await _context.tblStafiShkolles.FindAsync(id);
+        await using var context = GetContext(schemaName);
+
+        var stafi = await context.tblStafiShkolles.FindAsync(id);
         if (stafi == null)
             return new Response<string>(null).NotFound("Stafi nuk u gjet");
 
-        _context.tblStafiShkolles.Remove(stafi);
-        await _context.SaveChangesAsync();
+        context.tblStafiShkolles.Remove(stafi);
+        await context.SaveChangesAsync();
 
+        _logger.LogInformation("Stafi me ID {Id} u fshi nga skema '{Schema}'", id, schemaName);
         return new Response<string>("Stafi u fshi me sukses", true);
+    }
+
+    public async Task<Response<List<StafiShkolles>>> GetAllAsync(string schemaName)
+    {
+        await using var context = GetContext(schemaName);
+
+        try
+        {
+            var data = await context.tblStafiShkolles
+                .Include(s => s.Person)
+                .Include(s => s.Shkolla)
+                .ToListAsync();
+
+            return new Response<List<StafiShkolles>>(data, true, "Lista u kthye me sukses");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Gabim gjatë marrjes së listës së stafit për skemën '{Schema}'", schemaName);
+            return new Response<List<StafiShkolles>>(null).InternalServerError(ex.Message);
+        }
+    }
+
+    public async Task<Response<StafiShkolles>> GetByIdAsync(string schemaName, int id)
+    {
+        await using var context = GetContext(schemaName);
+
+        var stafi = await context.tblStafiShkolles
+            .Include(s => s.Person)
+            .Include(s => s.Shkolla)
+            .FirstOrDefaultAsync(s => s.Id == id);
+
+        if (stafi == null)
+            return new Response<StafiShkolles>(null).NotFound("Stafi nuk u gjet");
+
+        return new Response<StafiShkolles>(stafi, true, "Stafi u gjet me sukses");
     }
 }

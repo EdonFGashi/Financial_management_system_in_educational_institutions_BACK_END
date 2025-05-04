@@ -4,7 +4,7 @@ using Financial_management_system_in_educational_institutions_API.Models.Dto.Shk
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/{schemaName}/[controller]")]
 public class StafiShkollesController : ControllerBase
 {
     private readonly IStafiService _service;
@@ -15,44 +15,44 @@ public class StafiShkollesController : ControllerBase
     }
 
     [HttpGet("paginated")]
-    public async Task<IActionResult> GetPaginated([FromQuery] PaginationDTO paginationDto)
+    public async Task<IActionResult> GetPaginated([FromRoute] string schemaName, [FromQuery] PaginationDTO paginationDto)
     {
-        var result = await _service.GetAllPaginatedAsync(paginationDto);
+        var result = await _service.GetAllPaginatedAsync(schemaName, paginationDto);
         return StatusCode(result.StatusCode, result);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromRoute] string schemaName)
     {
-        var result = await _service.GetAllAsync();
+        var result = await _service.GetAllAsync(schemaName);
         return StatusCode(result.StatusCode, result);
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById([FromRoute] string schemaName, int id)
     {
-        var result = await _service.GetByIdAsync(id);
+        var result = await _service.GetByIdAsync(schemaName, id);
         return StatusCode(result.StatusCode, result);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateStafiShkollesDto dto)
+    public async Task<IActionResult> Create([FromRoute] string schemaName, [FromBody] CreateStafiShkollesDto dto)
     {
-        var result = await _service.CreateAsync(dto);
+        var result = await _service.CreateAsync(schemaName, dto);
         return StatusCode(result.StatusCode, result);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateStafiShkollesDto dto)
+    public async Task<IActionResult> Update([FromRoute] string schemaName, int id, [FromBody] UpdateStafiShkollesDto dto)
     {
-        var result = await _service.UpdateAsync(id, dto);
+        var result = await _service.UpdateAsync(schemaName, id, dto);
         return StatusCode(result.StatusCode, result);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete([FromRoute] string schemaName, int id)
     {
-        var result = await _service.DeleteAsync(id);
+        var result = await _service.DeleteAsync(schemaName, id);
         return StatusCode(result.StatusCode, result);
     }
 }
