@@ -35,7 +35,7 @@ namespace Financial_management_system_in_educational_institutions_API.Services
                     .AsQueryable();
 
                 if (!string.IsNullOrEmpty(kompania))
-                    query = query.Where(p => p.Produkti.Kompania.Emri.Contains(kompania));
+                    query = query.Where(p => p.Produkti.Kompania.EmriKompanis.Contains(kompania));
 
                 if (!string.IsNullOrEmpty(shkolla))
                     query = query.Where(p => p.Shkolla.emriShkolles.Contains(shkolla));

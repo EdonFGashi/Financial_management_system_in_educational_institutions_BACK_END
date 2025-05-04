@@ -63,7 +63,6 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                     b.HasKey("accId");
 
                     b.ToTable("tblAccounts", "shared");
-
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Adresa", b =>
@@ -364,7 +363,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Emri")
+                    b.Property<string>("EmriKompanis")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -717,8 +716,8 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Fotografia")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<int>("KompaniaId")
                         .HasColumnType("int");
