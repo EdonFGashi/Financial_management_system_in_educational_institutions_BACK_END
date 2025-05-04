@@ -1,5 +1,5 @@
 ﻿using Financial_management_system_in_educational_institutions_API.Models;
-using Financial_management_system_in_educational_institutions_API.Models.Dto;
+using Financial_management_system_in_educational_institutions_API.Models.Dto.Produkti;
 using Financial_management_system_in_educational_institutions_API.Models.Shared;
 
 namespace Financial_management_system_in_educational_institutions_API.Interfaces
