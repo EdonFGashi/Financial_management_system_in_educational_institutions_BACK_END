@@ -1,4 +1,4 @@
-﻿using Financial_management_system_in_educational_institutions_API.Data;
+using Financial_management_system_in_educational_institutions_API.Data;
 using Financial_management_system_in_educational_institutions_API.Models;
 using Financial_management_system_in_educational_institutions_API.Models.Identity;
 using Financial_management_system_in_educational_institutions_API.Multitenancy;
@@ -10,20 +10,20 @@ using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-public class TenantShkollaService
+public class TenantKompaniaService  
 {
     private readonly IConfiguration _configuration;
-    private readonly ILogger<TenantShkollaService> _logger;
+    private readonly ILogger<TenantKompaniaService> _logger;
     private readonly UserManager<AppUser> _userManager;
 
-    public TenantShkollaService(IConfiguration configuration, ILogger<TenantShkollaService> logger, UserManager<AppUser> userManager)
+    public TenantKompaniaService(IConfiguration configuration, ILogger<TenantKompaniaService> logger, UserManager<AppUser> userManager)
     {
         _configuration = configuration;
         _logger = logger;
         _userManager = userManager;
     }
 
-    public async Task AddSchoolWithDetailsAsync(string schemaName, RegisterShkollaDto dto)
+    public async Task AddKompaniaWithDetailsAsync(string schemaName, RegisterKompaniaDto dto)
     {
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseSqlServer(_configuration.GetConnectionString("DefaultSQLConnection"));
@@ -31,50 +31,50 @@ public class TenantShkollaService
         var tenantProvider = new StaticTenantProvider(schemaName);
         await using var context = new ApplicationDbContext(optionsBuilder.Options, tenantProvider);
 
-        // School Address
-        var shkollaAdresa = new Adresa
+    
+        var kompaniaAdresa = new Adresa
         {
-            Rruga = dto.ShkollaRruga,
+            Rruga = dto.KompaniaRruga,
             Qyteti = dto.Qyteti,
             Shteti = dto.Shteti,
             KodiPostal = dto.KodiPostal,
             CreatedAt = DateTime.UtcNow
         };
-        context.tblAdresat.Add(shkollaAdresa);
+        context.tblAdresat.Add(kompaniaAdresa);
         await context.SaveChangesAsync();
 
-        // Drejtori Address
-        var drejtoriAdresa = new Adresa
+      
+        var pronariAdresa = new Adresa
         {
-            Rruga = dto.DrejtoriRruga,
+            Rruga = dto.PronariRruga,
             Qyteti = dto.Qyteti,
             Shteti = dto.Shteti,
             KodiPostal = dto.KodiPostal,
             CreatedAt = DateTime.UtcNow
         };
-        context.tblAdresat.Add(drejtoriAdresa);
+        context.tblAdresat.Add(pronariAdresa);
         await context.SaveChangesAsync();
 
-        // Drejtori (Person)
-        if (!await context.tblPersons.AnyAsync(p => p.NumriPersonal == dto.DrejtoriNumriPersonal))
+    
+        if (!await context.tblPersons.AnyAsync(p => p.NumriPersonal == dto.PronariNumriPersonal))
         {
-            var drejtori = new Person
+            var pronari = new Person
             {
-                NumriPersonal = dto.DrejtoriNumriPersonal,
+                NumriPersonal = dto.PronariNumriPersonal,
                 Emri = dto.Emri,
                 Mbiemri = dto.Mbiemri,
                 Nacionaliteti = dto.Nacionaliteti,
-                AdresaId = drejtoriAdresa.Id,
+                AdresaId = pronariAdresa.Id,
                 Gjinia = dto.Gjinia,
                 DataLindjes = dto.DataLindjes
             };
-            context.tblPersons.Add(drejtori);
+            context.tblPersons.Add(pronari);
             await context.SaveChangesAsync();
         }
 
         // Create Identity user for shkolla
-        var shkollaUser = new AppUser { UserName = dto.Email, Email = dto.Email };
-        var createResult = await _userManager.CreateAsync(shkollaUser, dto.Password);
+        var kompaniaUser = new AppUser { UserName = dto.Email, Email = dto.Email };
+        var createResult = await _userManager.CreateAsync(kompaniaUser, dto.Password);
 
         if (!createResult.Succeeded)
         {
@@ -82,25 +82,23 @@ public class TenantShkollaService
                 string.Join(", ", createResult.Errors.Select(e => e.Description)));
         }
 
-        await _userManager.AddClaimAsync(shkollaUser, new Claim("role", "Shkolla"));
+        await _userManager.AddClaimAsync(kompaniaUser, new Claim("role", "Kompania"));
 
         // Now create the Shkolla and assign the created user
-        var shkolla = new Shkolla
+        var kompania = new Kompania
         {
-            emriShkolles = dto.EmriShkolles,
-            drejtori = dto.DrejtoriNumriPersonal,
-            nrNxenesve = dto.NrNxenesve,
-            AdresaId = shkollaAdresa.Id,
-            buxhetiAktual = dto.BuxhetiAktual,
-            autoNdarja = dto.AutoNdarja,
-            UserId = shkollaUser.Id,
-            createdAt = DateTime.UtcNow
+            EmriKompanis = dto.EmriKompanis,
+            PronariId = dto.PronariNumriPersonal,
+            Sherbimi = dto.Sherbimi,
+            NrXhirologaris = dto.NrXhirologaris,
+            AdresaId = kompaniaAdresa.Id,
+            UserId = kompaniaUser.Id,
+            CreatedAt = DateTime.UtcNow
         };
 
-        context.tblShkolla.Add(shkolla);
+        context.tblKompania.Add(kompania);
         await context.SaveChangesAsync();
 
-        _logger.LogInformation("Shkolla '{Shkolla}' added to schema '{Schema}'", shkolla.emriShkolles, schemaName);
+        _logger.LogInformation("Shkolla '{Shkolla}' added to schema '{Schema}'", kompania.EmriKompanis, schemaName);
     }
-
 }

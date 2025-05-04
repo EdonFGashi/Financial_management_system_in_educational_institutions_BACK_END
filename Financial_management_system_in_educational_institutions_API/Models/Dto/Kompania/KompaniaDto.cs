@@ -7,7 +7,7 @@ public class KompaniaDto
     public string Sherbimi { get; set; }
     public int NrXhirologaris { get; set; }
     public int AdresaId { get; set; }
-    public int AccountId { get; set; }
+    public string UserId { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }
