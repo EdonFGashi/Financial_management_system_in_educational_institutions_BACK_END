@@ -76,7 +76,7 @@ namespace Financial_management_system_in_educational_institutions_API.Data
             .HasMaxLength(1000);
 
             modelBuilder.Entity<Komuna>()
-                .Property(k => k.buxhetiAktual)
+                .Property(k => k.BuxhetiAktual)
                 .HasPrecision(18, 2);
 
 
