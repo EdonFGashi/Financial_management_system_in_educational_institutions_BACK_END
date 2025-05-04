@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Financial_management_system_in_educational_institutions_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250428000344_IdentityTables")]
-    partial class IdentityTables
+    [Migration("20250429172007_UpdateKompaniModel")]
+    partial class UpdateKompaniModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,10 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("accId"));
+
+                    b.Property<string>("email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("organisationName")
                         .IsRequired()
@@ -61,29 +65,31 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasKey("accId");
 
-                    b.ToTable("tblAccounts");
+                    b.ToTable("tblAccounts", (string)null);
 
                     b.HasData(
                         new
                         {
                             accId = 1,
+                            email = "rilindja@gmail.com",
                             organisationName = "Rilindja",
                             passwordHash = "324refds32q",
                             role = "kompani",
                             salt = "fdszx",
                             twoFAcode = 491593,
-                            twoFAtime = new DateTime(2025, 4, 28, 2, 3, 43, 336, DateTimeKind.Local).AddTicks(5841),
+                            twoFAtime = new DateTime(2025, 4, 29, 19, 20, 6, 704, DateTimeKind.Local).AddTicks(9853),
                             username = "kompania1"
                         },
                         new
                         {
                             accId = 2,
+                            email = "hasanprishtina@gmail.com",
                             organisationName = "Hasan Prishtina",
                             passwordHash = "vdsv2wqc2ws2",
                             role = "universitet",
                             salt = "adsyx",
                             twoFAcode = 154923,
-                            twoFAtime = new DateTime(2025, 4, 28, 2, 3, 43, 336, DateTimeKind.Local).AddTicks(5942),
+                            twoFAtime = new DateTime(2025, 4, 29, 19, 20, 6, 704, DateTimeKind.Local).AddTicks(9927),
                             username = "kompania1"
                         });
                 });
@@ -187,10 +193,6 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Lokacioni")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("NrXhirologaris")
                         .HasColumnType("int");
@@ -489,9 +491,6 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                     b.Property<DateTime>("DataPorosise")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("Paguar")
-                        .HasColumnType("bit");
-
                     b.Property<int>("ProduktiId")
                         .HasColumnType("int");
 
@@ -504,6 +503,10 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.Property<int>("ShkollaId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Statusi")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");

@@ -22,7 +22,7 @@ namespace Financial_management_system_in_educational_institutions_API.Services
             {
                 var shkollat = await _context.tblShkolla
                     .Include(s => s.Person)
-                    .Include(s => s.Account)
+                    .Include(s => s.User)
                     .ToListAsync();
 
                 return new Response<List<Shkolla>>(shkollat, true, "Shkollat u kthyen me sukses");
@@ -39,7 +39,7 @@ namespace Financial_management_system_in_educational_institutions_API.Services
             {
                 var shkolla = await _context.tblShkolla
                     .Include(s => s.Person)
-                    .Include(s => s.Account)
+                    .Include(s => s.User)
                     .FirstOrDefaultAsync(s => s.shkollaId == id);
 
                 if (shkolla == null)
@@ -57,7 +57,7 @@ namespace Financial_management_system_in_educational_institutions_API.Services
         {
             try
             {
-                var directorExists = await _context.tblPersons.AnyAsync(p => p.numriPersonal == shkollaDto.drejtori);
+                var directorExists = await _context.tblPersons.AnyAsync(p => p.NumriPersonal == shkollaDto.drejtori);
 
                 if (!directorExists)
                     return new Response<Shkolla>(null).BadRequest("Drejtori i dhënë nuk ekziston.");
@@ -66,11 +66,11 @@ namespace Financial_management_system_in_educational_institutions_API.Services
                 {
                     emriShkolles = shkollaDto.emriShkolles,
                     drejtori = shkollaDto.drejtori,
-                    lokacioni = shkollaDto.lokacioni,
+                    AdresaId = shkollaDto.AdresaId,
                     nrNxenesve = shkollaDto.nrNxenesve,
                     buxhetiAktual = shkollaDto.buxhetiAktual,
                     autoNdarja = shkollaDto.autoNdarja,
-                    accId = shkollaDto.accId,
+                    UserId = shkollaDto.UserId,
                     createdAt = DateTime.UtcNow
                 };
 
@@ -94,7 +94,7 @@ namespace Financial_management_system_in_educational_institutions_API.Services
                     return new Response<Shkolla>(null).NotFound("Shkolla nuk u gjet.");
 
                 existing.drejtori = updatedShkolla.drejtori;
-                existing.lokacioni = updatedShkolla.lokacioni;
+                existing.AdresaId = updatedShkolla.AdresaId;
                 existing.nrNxenesve = updatedShkolla.nrNxenesve;
                 existing.buxhetiAktual = updatedShkolla.buxhetiAktual;
                 existing.autoNdarja = updatedShkolla.autoNdarja;

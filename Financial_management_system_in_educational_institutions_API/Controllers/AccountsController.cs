@@ -2,46 +2,53 @@
 using Financial_management_system_in_educational_institutions_API.Data;
 using Financial_management_system_in_educational_institutions_API.Models;
 using Financial_management_system_in_educational_institutions_API.Models.Dto;
+using Financial_management_system_in_educational_institutions_API.Models.Dto.Shkolla;
+using Financial_management_system_in_educational_institutions_API.Models.Identity;
+using Financial_management_system_in_educational_institutions_API.Multitenancy;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using MovieAPI.DTOs;
-using MovieAPI.Helpers;
-
-
-//using MovieAPI.DTOs;
+using Financial_management_system_in_educational_institutions_API.DTOs;
 //using MovieAPI.Helpers;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace MovieAPI.Controllers
+namespace Financial_management_system_in_educational_institutions_API.Controllers
 {
     [ApiController]
     [Route("api/accounts")]
     public class AccountsController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly UserManager<AppUser> userManager;
+        private readonly SignInManager<AppUser> signInManager;
         private readonly IConfiguration configuration;
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
+        private readonly TenantSchemaInitializer tenantSchemaInitializer;
+        private readonly TenantShkollaService tenantShkollaService;
 
-        public AccountsController(UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+        public AccountsController(
+            UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager,
             IConfiguration configuration,
             ApplicationDbContext context,
-            IMapper mapper)
+            IMapper mapper,
+            TenantSchemaInitializer tenantSchemaInitializer,
+            TenantShkollaService tenantShkollaService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.configuration = configuration;
             this.context = context;
             this.mapper = mapper;
+            this.tenantSchemaInitializer = tenantSchemaInitializer;
+            this.tenantShkollaService = tenantShkollaService;
         }
+
 
         //[HttpPost("listUsers")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
@@ -113,6 +120,45 @@ namespace MovieAPI.Controllers
         }
 
 
+        [HttpPost("register-komuna")]
+        public async Task<IActionResult> RegisterKomunaWithUser([FromBody] RegisterKomunaWithUserDto dto)
+        {
+            var user = new AppUser { UserName = dto.Email, Email = dto.Email };
+            var result = await userManager.CreateAsync(user, dto.Password);
+
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            await userManager.AddClaimAsync(user, new Claim("role", dto.Role));
+
+            var komuna = new Komuna
+            {
+                Qyteti = dto.Qyteti,
+                NrPopullsis = dto.NrPopullsis,
+                BuxhetiAktual = dto.BuxhetiAktual,
+                DitaNdarjesAuto = dto.DitaNdarjesAuto,
+                UserId = user.Id
+            };
+            context.tblKomuna.Add(komuna);
+            await context.SaveChangesAsync();
+
+            var schemaName = GenerateSafeSchemaName(dto.Qyteti);
+            await tenantSchemaInitializer.CreateSchemaAndMigrateAsync(schemaName);
+
+            return Ok(new { message = "Komuna and user created successfully", userId = user.Id });
+        }
+
+        [HttpPost("register-shkolla")]
+        public async Task<IActionResult> RegisterShkolla([FromBody] RegisterShkollaDto dto)
+        {
+            var schemaName = GenerateSafeSchemaName(dto.Qyteti);
+
+            // Call the service
+            await tenantShkollaService.AddSchoolWithDetailsAsync(schemaName, dto);
+
+            return Ok(new { message = "Shkolla created successfully" });
+        }
+
 
 
 
@@ -139,7 +185,7 @@ namespace MovieAPI.Controllers
         {
 
 
-            var user = new IdentityUser { UserName = userCredentials.Email, Email = userCredentials.Email };//e krijojme nje instance te IdentityUser dhe i japim emrin dhe emailin e perdoruesit
+            var user = new AppUser { UserName = userCredentials.Email, Email = userCredentials.Email };//e krijojme nje instance te IdentityUser dhe i japim emrin dhe emailin e perdoruesit
             var result = await userManager.CreateAsync(user, userCredentials.Password);//krijojme perdoruesin dhe i japim passwordin e tij
 
             if (result.Succeeded)//nese perdoruesi eshte krijuar me sukses atehere e kthejme tokenin
@@ -183,7 +229,7 @@ namespace MovieAPI.Controllers
         }
 
         //metoda private e cila do ta ndertoje tokenin
-        private async Task<AuthenticationResponse> BuildToken(IdentityUser userCredentials)
+        private async Task<AuthenticationResponse> BuildToken(AppUser userCredentials)
         {
             //var claims = new List<Claim>()
             //{
@@ -214,5 +260,20 @@ namespace MovieAPI.Controllers
                 //Role = claims.FirstOrDefault(c => c.Type == "role")?.Value
             };
         }
+
+        // AccountsController.cs (at the bottom of the class)
+
+        private string GenerateSafeSchemaName(string name)
+        {
+            var invalidChars = Path.GetInvalidFileNameChars();
+            var cleaned = new string(name
+                .ToLowerInvariant()
+                .Replace(" ", "_")
+                .Where(c => !invalidChars.Contains(c))
+                .ToArray());
+
+            return cleaned;
+        }
+
     }
 }

@@ -62,7 +62,8 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasKey("accId");
 
-                    b.ToTable("tblAccounts", (string)null);
+                    b.ToTable("tblAccounts", "shared");
+
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Adresa", b =>
@@ -99,7 +100,213 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Adresat");
+                    b.ToTable("tblAdresat", "design");
+                });
+
+            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Identity.AppRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", "shared");
+                });
+
+            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Identity.AppRoleClaim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", "shared");
+                });
+
+            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("KomunaId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("KomunaId");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", "shared");
+                });
+
+            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserClaim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", "shared");
+                });
+
+            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserLogin", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", "shared");
+                });
+
+            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserRole", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", "shared");
+                });
+
+            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserToken", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", "shared");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.InventariAktual", b =>
@@ -140,7 +347,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("ShkollaId");
 
-                    b.ToTable("InventariAktual");
+                    b.ToTable("tblInventariAktual", "design");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Kompania", b =>
@@ -150,9 +357,6 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccountId")
-                        .HasColumnType("int");
 
                     b.Property<int>("AdresaId")
                         .HasColumnType("int");
@@ -164,10 +368,6 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Lokacioni")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("NrXhirologaris")
                         .HasColumnType("int");
@@ -183,47 +383,52 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasIndex("AccountId");
+                    b.HasKey("Id");
 
                     b.HasIndex("AdresaId");
 
                     b.HasIndex("PronariId");
 
-                    b.ToTable("Kompania");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("tblKompania", "design");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Komuna", b =>
                 {
-                    b.Property<int>("komunaId")
+                    b.Property<int>("KomunaId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("komunaId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("KomunaId"));
 
-                    b.Property<int>("accId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("buxhetiAktual")
+                    b.Property<decimal?>("BuxhetiAktual")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<bool>("ditaNdarjesAuto")
+                    b.Property<bool>("DitaNdarjesAuto")
                         .HasColumnType("bit");
 
-                    b.Property<int>("nrPopullsis")
+                    b.Property<int?>("NrPopullsis")
                         .HasColumnType("int");
 
-                    b.Property<string>("qyteti")
+                    b.Property<string>("Qyteti")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("komunaId");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasIndex("accId");
+                    b.HasKey("KomunaId");
 
-                    b.ToTable("tblKomuna", (string)null);
+                    b.HasIndex("UserId");
+
+                    b.ToTable("tblKomuna", "shared");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Marreveshja", b =>
@@ -263,7 +468,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("TenderiId");
 
-                    b.ToTable("Marreveshja");
+                    b.ToTable("tblMarreveshja", "design");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Ndalesat", b =>
@@ -302,7 +507,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("StafiShkollesId");
 
-                    b.ToTable("Ndalesat");
+                    b.ToTable("tblNdalesat", "design");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.NdarjetBuxhetit", b =>
@@ -339,7 +544,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("ShkollaId");
 
-                    b.ToTable("NdarjetBuxhetit");
+                    b.ToTable("tblNdarjetBuxhetit", "design");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.OretShtese", b =>
@@ -376,7 +581,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("StafiShkollesId");
 
-                    b.ToTable("OretShtese");
+                    b.ToTable("tblOretShtese", "design");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Pagesat", b =>
@@ -412,44 +617,41 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("PorositeId");
 
-                    b.ToTable("Pagesat");
+                    b.ToTable("tblPagesat", "design");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Person", b =>
                 {
-                    b.Property<int>("numriPersonal")
+                    b.Property<int>("NumriPersonal")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("dataLindjes")
+                    b.Property<int>("AdresaId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataLindjes")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("emri")
+                    b.Property<string>("Emri")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("gjinia")
+                    b.Property<string>("Gjinia")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("mbiemri")
+                    b.Property<string>("Mbiemri")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("nacionaliteti")
+                    b.Property<string>("Nacionaliteti")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("qyteti")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("NumriPersonal");
 
-                    b.Property<string>("shteti")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasIndex("AdresaId");
 
-                    b.HasKey("numriPersonal");
-
-                    b.ToTable("tblPersons");
+                    b.ToTable("tblPersons", "design");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Porosite", b =>
@@ -492,7 +694,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("ShkollaId");
 
-                    b.ToTable("Porosite");
+                    b.ToTable("tblPorosite", "design");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Produkti", b =>
@@ -543,7 +745,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("KompaniaId");
 
-                    b.ToTable("Produkti", (string)null);
+                    b.ToTable("tblProdukti", "design");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Role", b =>
@@ -576,7 +778,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("tblRoles", "design");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Shkolla", b =>
@@ -587,11 +789,12 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("shkollaId"));
 
-                    b.Property<int?>("AccountaccId")
+                    b.Property<int>("AdresaId")
                         .HasColumnType("int");
 
-                    b.Property<int>("accId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("autoNdarja")
                         .HasColumnType("bit");
@@ -611,11 +814,6 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<string>("lokacioni")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
                     b.Property<int>("nrNxenesve")
                         .HasColumnType("int");
 
@@ -624,11 +822,13 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasKey("shkollaId");
 
-                    b.HasIndex("AccountaccId");
+                    b.HasIndex("AdresaId");
+
+                    b.HasIndex("UserId");
 
                     b.HasIndex("drejtori");
 
-                    b.ToTable("tblShkolla");
+                    b.ToTable("tblShkolla", "design");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.StafiShkolles", b =>
@@ -669,7 +869,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasIndex("shkollaId");
 
-                    b.ToTable("StafiShkolles");
+                    b.ToTable("tblStafiShkolles", "design");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Tenderi", b =>
@@ -702,205 +902,67 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tenderi");
+                    b.ToTable("tblTenderi", "design");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Identity.AppRoleClaim", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUser", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Komuna", "Komuna")
+                        .WithMany()
+                        .HasForeignKey("KomunaId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.Navigation("Komuna");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserClaim", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserLogin", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserRole", b =>
                 {
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("LoginProvider", "ProviderKey");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserToken", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.InventariAktual", b =>
@@ -916,12 +978,6 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Kompania", b =>
                 {
-                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Adresa", "Adresa")
                         .WithMany()
                         .HasForeignKey("AdresaId")
@@ -934,22 +990,28 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Account");
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Adresa");
 
                     b.Navigation("Person");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Komuna", b =>
                 {
-                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Account", "Account")
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUser", "User")
                         .WithMany()
-                        .HasForeignKey("accId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Account");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Marreveshja", b =>
@@ -1023,6 +1085,17 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                     b.Navigation("Porosite");
                 });
 
+            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Person", b =>
+                {
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Adresa", "Adresa")
+                        .WithMany()
+                        .HasForeignKey("AdresaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Adresa");
+                });
+
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Porosite", b =>
                 {
                     b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Produkti", "Produkti")
@@ -1034,7 +1107,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                     b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Shkolla", "Shkolla")
                         .WithMany()
                         .HasForeignKey("ShkollaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Produkti");
@@ -1055,9 +1128,17 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Shkolla", b =>
                 {
-                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Account", "Account")
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Adresa", "Adresa")
                         .WithMany()
-                        .HasForeignKey("AccountaccId");
+                        .HasForeignKey("AdresaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Person", "Person")
                         .WithMany()
@@ -1065,9 +1146,11 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Account");
+                    b.Navigation("Adresa");
 
                     b.Navigation("Person");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.StafiShkolles", b =>
@@ -1087,57 +1170,6 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                     b.Navigation("Person");
 
                     b.Navigation("Shkolla");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

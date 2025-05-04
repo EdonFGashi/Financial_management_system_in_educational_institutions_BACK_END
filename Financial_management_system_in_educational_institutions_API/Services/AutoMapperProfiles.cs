@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Financial_management_system_in_educational_institutions_API.Models.Dto;
 using Microsoft.AspNetCore.Identity;
-using MovieAPI.DTOs;
+using Financial_management_system_in_educational_institutions_API.DTOs;
 
 namespace Financial_management_system_in_educational_institutions_API.Services
 {

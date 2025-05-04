@@ -1,25 +1,29 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Financial_management_system_in_educational_institutions_API.Models.Identity;
 
 namespace Financial_management_system_in_educational_institutions_API.Models
 {
-    [Table("tblKomuna")]
+    [Table("tblKomuna", Schema = "shared")]
     public class Komuna
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int komunaId { get; set; }
+        public int KomunaId { get; set; }
 
-        public string qyteti { get; set; }
+        public string Qyteti { get; set; }
 
-        public int nrPopullsis { get; set; }
+        public int? NrPopullsis { get; set; }
 
-        public decimal buxhetiAktual { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? BuxhetiAktual { get; set; }
 
-        public bool ditaNdarjesAuto { get; set; }
+        public bool DitaNdarjesAuto { get; set; }
 
-        [ForeignKey("Account")]
-        public int accId { get; set; }
-        public Account? Account { get; set; }
+        // This user "owns" the Komuna tenant
+        public string UserId { get; set; }
+
+        [ForeignKey("UserId")]
+        public AppUser User { get; set; }
     }
 }

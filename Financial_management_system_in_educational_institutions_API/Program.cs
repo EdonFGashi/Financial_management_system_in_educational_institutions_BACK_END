@@ -1,4 +1,4 @@
-using Financial_management_system_in_educational_institutions_API;
+﻿using Financial_management_system_in_educational_institutions_API;
 using Financial_management_system_in_educational_institutions_API.Data;
 using Financial_management_system_in_educational_institutions_API.Services.Shared;
 using Financial_management_system_in_educational_institutions_API.Services;
@@ -6,34 +6,42 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Text;
 using Financial_management_system_in_educational_institutions_API.Interfaces;
 using Financial_management_system_in_educational_institutions_API.Interfaces.Shared;
 using Financial_management_system_in_educational_institutions_API.Models;
 
+using Financial_management_system_in_educational_institutions_API.Multitenancy;
+using Financial_management_system_in_educational_institutions_API.Models.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 // Access Configuration from builder
 var configuration = builder.Configuration;
 
-// Add services to the container.
-
-//service for DB connecting
-builder.Services.AddDbContext<ApplicationDbContext>(option => {
-    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
+// -------------------- DATABASE --------------------
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer(configuration.GetConnectionString("DefaultSQLConnection"));
 });
 
-builder.Services.AddControllers().AddNewtonsoftJson();
+// -------------------- MULTITENANCY --------------------
+builder.Services.AddHttpContextAccessor(); // Needed for accessing claims in UserTenantProvider
+builder.Services.AddScoped<ITenantProvider, UserTenantProvider>();
+builder.Services.AddSingleton<IModelCacheKeyFactory, TenantModelCacheKeyFactory>();
+builder.Services.AddScoped<TenantSchemaInitializer>();
+builder.Services.AddScoped<TenantShkollaService>();
 
-
-
-
-builder.Services.AddCors(options => {
+// -------------------- CORS --------------------
+builder.Services.AddCors(options =>
+{
     var frontendURL = configuration.GetValue<string>("frontend_url");
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins(frontendURL).AllowAnyMethod().AllowAnyHeader()
-            .WithExposedHeaders(new string[] { "totalAmountOfRecords" }); //per te ekspozuar headerin e numrit total te rekordeve ne http response (tek klienti ne browser)
+        builder.WithOrigins(frontendURL)
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .WithExposedHeaders(new[] { "totalAmountOfRecords" });
     });
 });
 
@@ -41,42 +49,46 @@ builder.Services.AddCors(options => {
 
 
 builder.Services.AddLogging();
+// -------------------- CONTROLLERS --------------------
+builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddAutoMapper(typeof(Program));
-builder.Services.AddControllers();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// -------------------- CUSTOM SERVICES --------------------
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<IShkollaService, ShkollaService>();
+builder.Services.AddScoped<IKompaniaService, KompaniaService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 builder.Services.AddScoped<IPorositeService, PorositeService>();
 builder.Services.AddScoped<IRaportiService, RaportiService>();
 builder.Services.AddScoped<IProduktiService, ProduktiService>();
 
 
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-//identiteti per autentikim
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+// -------------------- IDENTITY --------------------
+builder.Services.AddIdentity<AppUser, AppRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders(); //per te perdorur Identity ne databaze
+    .AddDefaultTokenProviders();
 
+// -------------------- JWT AUTH --------------------
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>//parametrat per validimin e nje JSON web tokeni (sepse deshirojme te pranojme vetem tokena qe jane valid)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = false, //sepse deshirojme qe ta verifikojme web tokenin permes signing key
-                IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(configuration["keyjwt"])),
-                ClockSkew = TimeSpan.Zero
-            };
-
-        });
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = false,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(configuration["keyjwt"])),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
 builder.Services.AddAuthorization(options =>
 {
@@ -85,7 +97,7 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// -------------------- MIDDLEWARE --------------------
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -93,15 +105,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors();
-
-
 app.UseHttpsRedirection();
-app.UseAuthentication(); //per te perdorur autentikimin
-
-
-app.UseAuthentication(); //me jwtbearer
-app.UseAuthorization(); //me jwtbearer
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

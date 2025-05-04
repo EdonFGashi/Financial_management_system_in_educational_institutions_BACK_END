@@ -6,7 +6,6 @@ public class AdresaDto
     public string Qyteti { get; set; }
     public string? Shteti { get; set; }
     public string? KodiPostal { get; set; }
-    public string? Country { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }
