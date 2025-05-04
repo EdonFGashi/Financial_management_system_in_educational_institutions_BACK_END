@@ -36,7 +36,7 @@ public class StafiShkollesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] StafiShkollesDto dto)
+    public async Task<IActionResult> Create([FromBody] CreateStafiShkollesDto dto)
     {
         var result = await _service.CreateAsync(dto);
         return StatusCode(result.StatusCode, result);
