@@ -2,7 +2,7 @@
 using Financial_management_system_in_educational_institutions_API.Models.Dto.Shporta;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
+
 
 namespace Financial_management_system_in_educational_institutions_API.Controllers
 {
@@ -18,10 +18,9 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             _shportaService = shportaService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult> GetShporta()
+        [HttpGet("{shkollaId}")]
+        public async Task<ActionResult> GetShporta(int shkollaId)
         {
-            int shkollaId = JwtHelper.GetUserId(HttpContext.User);
             var items = await _shportaService.GetShportaByShkollaIdAsync(shkollaId);
             return Ok(items);
         }
@@ -29,8 +28,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         [HttpPost]
         public async Task<ActionResult> AddToShporta(CreateShportaDto dto)
         {
-            int shkollaId = JwtHelper.GetUserId(HttpContext.User);
-            await _shportaService.AddToShportaAsync(shkollaId, dto);
+            await _shportaService.AddToShportaAsync(dto.ShkollaId, dto);
             return Ok();
         }
 
@@ -48,5 +46,4 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             return Ok();
         }
     }
-
 }

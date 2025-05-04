@@ -2,6 +2,8 @@
 {
     public class CreateShportaDto
     {
+        public int ShkollaId { get; set; }
+
         public int ProduktiId { get; set; }
         public int Sasia { get; set; }
     }
