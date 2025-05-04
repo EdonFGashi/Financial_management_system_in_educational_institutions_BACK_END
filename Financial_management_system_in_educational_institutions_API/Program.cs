@@ -66,6 +66,9 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddScoped<IPorositeService, PorositeService>();
 builder.Services.AddScoped<IRaportiService, RaportiService>();
 builder.Services.AddScoped<IProduktiService, ProduktiService>();
+builder.Services.AddScoped<IStafiService, StafiService>();
+
+
 
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
