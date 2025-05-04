@@ -1,8 +1,11 @@
 ﻿using Financial_management_system_in_educational_institutions_API.Data;
+using Financial_management_system_in_educational_institutions_API.DTOs;
 using Financial_management_system_in_educational_institutions_API.Models.Dto;
 using Financial_management_system_in_educational_institutions_API.Models.Shared;
 using Financial_management_system_in_educational_institutions_API.Models;
 using Financial_management_system_in_educational_institutions_API.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
 
 public class StafiService : IStafiService
 {
@@ -11,6 +14,56 @@ public class StafiService : IStafiService
     public StafiService(ApplicationDbContext context)
     {
         _context = context;
+    }
+
+    public async Task<PaginatedResponse<StafiShkolles>> GetAllPaginatedAsync(PaginationDTO paginationDto)
+    {
+        try
+        {
+            var query = _context.tblStafiShkolles
+                .Include(s => s.Person)
+                .Include(s => s.Shkolla)
+                .AsQueryable();
+
+            var totalRecords = await query.CountAsync();
+
+            var pagedData = await query
+                .Skip((paginationDto.Page - 1) * paginationDto.RecordsPerPage)
+                .Take(paginationDto.RecordsPerPage)
+                .ToListAsync();
+
+            if (pagedData is not null)
+            {
+
+                return new PaginatedResponse<StafiShkolles>(
+                    pagedData,
+                    paginationDto.Page,
+                    paginationDto.RecordsPerPage,
+                    totalRecords,
+                    "Lista e stafit u kthye me sukses"
+                );
+            }
+
+            return new PaginatedResponse<StafiShkolles>(
+                    new List<StafiShkolles>(),
+                    paginationDto.Page,
+                    paginationDto.RecordsPerPage,
+                    totalRecords,
+                    "Nuk ka te dhena"
+            );
+        }
+        catch (Exception ex)
+        {
+            var emptyResponse = new PaginatedResponse<StafiShkolles>(
+                new List<StafiShkolles>(),
+                paginationDto.Page,
+                paginationDto.RecordsPerPage,
+                0
+            );
+
+            return emptyResponse.InternalServerError(ex.Message);
+        }
+
     }
 
     public async Task<Response<List<StafiShkolles>>> GetAllAsync()

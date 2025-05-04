@@ -16,5 +16,30 @@ namespace Financial_management_system_in_educational_institutions_API.Models.Sha
             RecordsPerPage = recordsPerPage;
             TotalRecords = totalRecords;
         }
+
+
+        public new PaginatedResponse<T> InternalServerError(string message = null)
+        {
+            base.InternalServerError(message);
+            return this;
+        }
+
+        public new PaginatedResponse<T> NotFound(string message = null)
+        {
+            base.NotFound(message);
+            return this;
+        }
+
+        public new PaginatedResponse<T> BadRequest(string message = null)
+        {
+            base.BadRequest(message);
+            return this;
+        }
+
+        public new PaginatedResponse<T> UnAuthorized(string message = null)
+        {
+            base.UnAuthorized(message);
+            return this;
+        }
     }
 }
