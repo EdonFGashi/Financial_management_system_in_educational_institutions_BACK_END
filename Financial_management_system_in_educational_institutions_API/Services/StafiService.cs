@@ -1,10 +1,10 @@
 ﻿using Financial_management_system_in_educational_institutions_API.Data;
 using Financial_management_system_in_educational_institutions_API.DTOs;
-using Financial_management_system_in_educational_institutions_API.Models.Dto;
 using Financial_management_system_in_educational_institutions_API.Models.Shared;
 using Financial_management_system_in_educational_institutions_API.Models;
 using Financial_management_system_in_educational_institutions_API.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Financial_management_system_in_educational_institutions_API.Models.Dto.Shkolla.Stafi;
 
 
 public class StafiService : IStafiService
@@ -132,7 +132,7 @@ public class StafiService : IStafiService
         existing.paga = dto.paga;
         existing.numriOreve = dto.numriOreve;
         existing.shkollaId = dto.shkollaId;
-        existing.updatedAt = dto.updatedAt ?? DateTime.UtcNow;
+        existing.updatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
         return new Response<StafiShkolles>(existing, true, "Stafi u përditësua me sukses");

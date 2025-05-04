@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Financial_management_system_in_educational_institutions_API.Models.Dto
+namespace Financial_management_system_in_educational_institutions_API.Models.Dto.Shkolla.Stafi
 {
     public class StafiShkollesDto
     {

@@ -1,6 +1,6 @@
 ﻿using Financial_management_system_in_educational_institutions_API.DTOs;
 using Financial_management_system_in_educational_institutions_API.Interfaces;
-using Financial_management_system_in_educational_institutions_API.Models.Dto;
+using Financial_management_system_in_educational_institutions_API.Models.Dto.Shkolla.Stafi;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
