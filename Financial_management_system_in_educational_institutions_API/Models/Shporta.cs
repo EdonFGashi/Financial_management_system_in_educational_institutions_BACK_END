@@ -12,6 +12,8 @@
 
         public int Sasia { get; set; }
 
+        public String foto;
+
         public string Statusi { get; set; } // "Aprovuar", "Jo Aprovuar"
 
         public DateTime DataShtimit { get; set; } = DateTime.UtcNow;

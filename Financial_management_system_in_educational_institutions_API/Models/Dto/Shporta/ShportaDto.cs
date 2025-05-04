@@ -6,6 +6,8 @@
         public int ProduktiId { get; set; }
         public string EmriProduktit { get; set; }
         public int Sasia { get; set; }
+
+        public String foto;
         public string Statusi { get; set; }
     }
 }
