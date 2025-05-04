@@ -96,7 +96,7 @@ public class StafiService : IStafiService
         return new Response<StafiShkolles>(stafi, true, "Stafi u gjet me sukses");
     }
 
-    public async Task<Response<StafiShkolles>> CreateAsync(StafiShkollesDto dto)
+    public async Task<Response<StafiShkolles>> CreateAsync(CreateStafiShkollesDto dto)
     {
         try
         {
