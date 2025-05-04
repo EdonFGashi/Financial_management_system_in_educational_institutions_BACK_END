@@ -30,7 +30,6 @@ builder.Services.AddHttpContextAccessor(); // Needed for accessing claims in Use
 builder.Services.AddScoped<ITenantProvider, UserTenantProvider>();
 builder.Services.AddSingleton<IModelCacheKeyFactory, TenantModelCacheKeyFactory>();
 builder.Services.AddScoped<TenantSchemaInitializer>();
-builder.Services.AddScoped<TenantShkollaService>();
 builder.Services.AddScoped<TenantKompaniaService>();
 
 // -------------------- CORS --------------------
