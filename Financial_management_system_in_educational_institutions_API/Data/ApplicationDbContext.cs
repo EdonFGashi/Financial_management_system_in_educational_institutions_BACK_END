@@ -43,8 +43,6 @@ namespace Financial_management_system_in_educational_institutions_API.Data
         public DbSet<Produkti> tblProdukti { get; set; }
         public DbSet<StafiShkolles> tblStafiShkolles { get; set; }
         public DbSet<Ndalesat> tblNdalesat { get; set; }
-        public DbSet<Shporta> Shportat { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
