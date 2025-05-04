@@ -30,6 +30,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         private readonly IMapper mapper;
         private readonly TenantSchemaInitializer tenantSchemaInitializer;
         private readonly TenantShkollaService tenantShkollaService;
+        private readonly TenantKompaniaService tenantKompaniaService;
 
         public AccountsController(
             UserManager<AppUser> userManager,
@@ -38,7 +39,8 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             ApplicationDbContext context,
             IMapper mapper,
             TenantSchemaInitializer tenantSchemaInitializer,
-            TenantShkollaService tenantShkollaService)
+            TenantShkollaService tenantShkollaService,
+            TenantKompaniaService tenantKompaniaService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -47,6 +49,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             this.mapper = mapper;
             this.tenantSchemaInitializer = tenantSchemaInitializer;
             this.tenantShkollaService = tenantShkollaService;
+            this.tenantKompaniaService = tenantKompaniaService;
         }
 
 
@@ -157,6 +160,17 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             await tenantShkollaService.AddSchoolWithDetailsAsync(schemaName, dto);
 
             return Ok(new { message = "Shkolla created successfully" });
+        }
+
+        [HttpPost("register-kompania")]
+        public async Task<IActionResult> RegisterKompania([FromBody] RegisterKompaniaDto dto)
+        {
+            var schemaName = GenerateSafeSchemaName(dto.Qyteti);
+
+            // Call the service
+            await tenantKompaniaService.AddKompaniaWithDetailsAsync(schemaName, dto);
+
+            return Ok(new { message = "Kompania created successfully" });
         }
 
 

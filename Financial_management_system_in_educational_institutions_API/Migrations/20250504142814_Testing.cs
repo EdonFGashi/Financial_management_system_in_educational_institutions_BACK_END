@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Financial_management_system_in_educational_institutions_API.Migrations
 {
     /// <inheritdoc />
-    public partial class FixesToTables : Migration
+    public partial class Testing : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -265,10 +265,9 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Emri = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    EmriKompanis = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PronariId = table.Column<int>(type: "int", nullable: false),
                     Sherbimi = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Lokacioni = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     NrXhirologaris = table.Column<int>(type: "int", nullable: false),
                     AdresaId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -340,7 +339,6 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                     buxhetiAktual = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     autoNdarja = table.Column<bool>(type: "bit", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -354,13 +352,6 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_tblShkolla_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
-                        principalSchema: "shared",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_tblShkolla_tblAdresat_AdresaId",
                         column: x => x.AdresaId,
@@ -390,7 +381,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                     SasiaNeStok = table.Column<int>(type: "int", nullable: false),
                     Origjina = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Prodhuesi = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Fotografia = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Fotografia = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     KompaniaId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -816,12 +807,6 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                 schema: "design",
                 table: "tblShkolla",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tblShkolla_UserId1",
-                schema: "design",
-                table: "tblShkolla",
-                column: "UserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblStafiShkolles_numriPersonal",

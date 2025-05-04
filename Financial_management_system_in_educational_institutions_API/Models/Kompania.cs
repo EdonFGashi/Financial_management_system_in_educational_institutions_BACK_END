@@ -13,7 +13,7 @@ namespace Financial_management_system_in_educational_institutions_API.Models
         public int Id { get; set; }
 
         [Required, StringLength(100)]
-        public string Emri { get; set; }
+        public string EmriKompanis { get; set; }
 
         [Required, ForeignKey("Person")]
         public int PronariId { get; set; }

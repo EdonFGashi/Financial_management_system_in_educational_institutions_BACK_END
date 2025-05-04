@@ -67,21 +67,13 @@ namespace Financial_management_system_in_educational_institutions_API.Data
             // ✅ Shared custom tables
             modelBuilder.Entity<Komuna>().ToTable("tblKomuna", "shared");
             modelBuilder.Entity<Account>().ToTable("tblAccounts", "shared");
-
-            modelBuilder.Entity<Account>().ToTable("tblAccounts");
-            modelBuilder.Entity<Produkti>().ToTable("Produkti");
             
-            modelBuilder.Entity<Produkti>()
-            .Property(p => p.Fotografia)
-            .HasMaxLength(1000);
-
-            modelBuilder.Entity<Komuna>()
-                .Property(k => k.BuxhetiAktual)
-                .HasPrecision(18, 2);
-
+            
+  
 
             // ✅ Tenant Tables (explicit schema)
             modelBuilder.Entity<Person>().ToTable("tblPersons", _schema);
+            modelBuilder.Entity<Produkti>().ToTable("Produkti",_schema);
             modelBuilder.Entity<Shkolla>().ToTable("tblShkolla", _schema);
             modelBuilder.Entity<Role>().ToTable("tblRoles", _schema);
             modelBuilder.Entity<Adresa>().ToTable("tblAdresat", _schema);
@@ -105,6 +97,15 @@ namespace Financial_management_system_in_educational_institutions_API.Data
             modelBuilder.Entity<Pagesat>().Property(p => p.TVSH).HasPrecision(18, 2);
 
             // ✅ Relationships
+
+            modelBuilder.Entity<Produkti>()
+            .Property(p => p.Fotografia)
+            .HasMaxLength(1000);
+
+            modelBuilder.Entity<Komuna>()
+                .Property(k => k.BuxhetiAktual)
+                .HasPrecision(18, 2);
+
             modelBuilder.Entity<Porosite>()
                 .HasOne(p => p.Shkolla)
                 .WithMany()
@@ -159,7 +160,7 @@ namespace Financial_management_system_in_educational_institutions_API.Data
                 .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            base.OnModelCreating(modelBuilder);
+            
         }
     }
     }

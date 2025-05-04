@@ -22,7 +22,7 @@ namespace Financial_management_system_in_educational_institutions_API.Services
             {
                 var kompania = await _context.tblKompania
                     .Include(s => s.Person)
-                    .Include(s => s.Account)
+                    .Include(s => s.User)
                     .ToListAsync();
 
                 return new Response<List<Kompania>>(kompania, true, "Kompanit u kthyen me sukses");
@@ -39,7 +39,7 @@ namespace Financial_management_system_in_educational_institutions_API.Services
             {
                 var kompania = await _context.tblKompania
                     .Include(s => s.Person)
-                    .Include(s => s.Account)
+                    .Include(s => s.User)
                     .FirstOrDefaultAsync(s => s.Id == id);
 
                 if (kompania == null)
@@ -57,19 +57,19 @@ namespace Financial_management_system_in_educational_institutions_API.Services
         {
             try
             {
-                var directorExists = await _context.tblPersons.AnyAsync(p => p.numriPersonal == kompaniaDto.PronariId);
+                var directorExists = await _context.tblPersons.AnyAsync(p => p.NumriPersonal == kompaniaDto.PronariId);
 
                 if (!directorExists)
                     return new Response<Kompania>(null).BadRequest("Pronari i dhënë nuk ekziston.");
 
                 var kompania = new Kompania
                 {
-                    Emri = kompaniaDto.Emri,
+                    EmriKompanis = kompaniaDto.Emri,
                     PronariId = kompaniaDto.PronariId,
                     Sherbimi = kompaniaDto.Sherbimi,
                     NrXhirologaris = kompaniaDto.NrXhirologaris,
                     AdresaId = kompaniaDto.AdresaId,
-                    AccountId = kompaniaDto.AccountId,
+                    UserId = kompaniaDto.UserId,
                     CreatedAt = DateTime.UtcNow
                 };
 
@@ -93,7 +93,7 @@ namespace Financial_management_system_in_educational_institutions_API.Services
                     return new Response<Kompania>(null).NotFound("Kompania nuk u gjet.");
 
                 existing.PronariId = updatedtKompania.PronariId;
-                existing.Emri = updatedtKompania.Emri;
+                existing.EmriKompanis = updatedtKompania.Emri;
                 existing.AdresaId = updatedtKompania.AdresaId;
                 existing.Sherbimi = updatedtKompania.Sherbimi;
                 existing.UpdatedAt = DateTime.UtcNow;
