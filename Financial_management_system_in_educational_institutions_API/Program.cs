@@ -93,7 +93,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("IsAdmin", policy => policy.RequireClaim("role", "admin"));
+    options.AddPolicy("IsAdmin", policy => policy.RequireRole( "admin"));
+
+    options.AddPolicy("IsAdminOrKomune", policy =>
+        policy.RequireRole("komune", "admin"));
+
+    options.AddPolicy("IsAdminOrShkolle", policy =>
+    policy.RequireRole( "shkolle", "admin"));
+
+    options.AddPolicy("IsAdminOrKompani", policy =>
+        policy.RequireRole("kompani", "admin"));
 });
 
 var app = builder.Build();
