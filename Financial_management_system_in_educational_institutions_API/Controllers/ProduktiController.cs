@@ -34,7 +34,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
 
             // POST: api/produkti
             [HttpPost]
-            public async Task<IActionResult> Create([FromBody] ProduktiDto produktiDto)
+            public async Task<IActionResult> Create([FromBody] CreateProduktiDto produktiDto)
             {
                 var response = await _produktiService.CreateAsync(produktiDto);
                 return StatusCode(response.StatusCode, response);
@@ -42,9 +42,9 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
 
             // PUT: api/produkti/5
             [HttpPut("{id}")]
-            public async Task<IActionResult> Update(int id, [FromBody] ProduktiDto produktiDto)
+            public async Task<IActionResult> Update([FromBody] UpdateProduktiDto produktiDto)
             {
-                var response = await _produktiService.UpdateAsync(id, produktiDto);
+                var response = await _produktiService.UpdateAsync(produktiDto);
                 return StatusCode(response.StatusCode, response);
             }
 
