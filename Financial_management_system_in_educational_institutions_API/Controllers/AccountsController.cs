@@ -104,6 +104,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
 
 
         [HttpPut("updateRole")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
         public async Task<IActionResult> UpdateUserRole([FromBody] UpdateRoleDTO dto)
         {
             var user = await userManager.FindByEmailAsync(dto.Email);
@@ -118,8 +119,6 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
 
 
             return NoContent();
-
-            
         }
 
 
