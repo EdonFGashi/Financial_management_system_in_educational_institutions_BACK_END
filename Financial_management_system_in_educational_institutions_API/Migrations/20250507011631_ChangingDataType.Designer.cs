@@ -4,6 +4,7 @@ using Financial_management_system_in_educational_institutions_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Financial_management_system_in_educational_institutions_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250507011631_ChangingDataType")]
+    partial class ChangingDataType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1175,7 +1178,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.RolePermissions", b =>
                 {
-                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserClaim", "AspNetUserClaims")
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserClaim", "AppUserClaim")
                         .WithMany()
                         .HasForeignKey("ClaimId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1187,7 +1190,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AspNetUserClaims");
+                    b.Navigation("AppUserClaim");
 
                     b.Navigation("Operations");
                 });

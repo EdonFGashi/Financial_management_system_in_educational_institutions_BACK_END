@@ -4,6 +4,7 @@ using Financial_management_system_in_educational_institutions_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Financial_management_system_in_educational_institutions_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250507013223_ChangingDataTypeeee")]
+    partial class ChangingDataTypeeee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -813,7 +816,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RolePermissionId"));
 
-                    b.Property<int>("ClaimId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<int>("OperationId")
@@ -821,7 +824,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasKey("RolePermissionId");
 
-                    b.HasIndex("ClaimId");
+                    b.HasIndex("Id");
 
                     b.HasIndex("OperationId");
 
@@ -1177,7 +1180,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                 {
                     b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserClaim", "AspNetUserClaims")
                         .WithMany()
-                        .HasForeignKey("ClaimId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

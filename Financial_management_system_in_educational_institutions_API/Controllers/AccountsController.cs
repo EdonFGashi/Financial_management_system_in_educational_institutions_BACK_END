@@ -66,37 +66,54 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         [HttpPost("listUsers")]
         public async Task<ActionResult<List<UsersDTO>>> GetListUsers([FromBody] PaginationDTO paginationDTO)
         {
-            var queryable = context.Users.AsQueryable();
-
-            // Apply pagination manually
-            var totalRecords = await queryable.CountAsync();
-            var users = await queryable
-                .Skip((paginationDTO.Page - 1) * paginationDTO.RecordsPerPage) // Skip the records based on page number
-                .Take(paginationDTO.RecordsPerPage) // Take only the records per page
-                .ToListAsync();
-
-            // Prepare the usersDTO list
-            var usersDTO = new List<UsersDTO>();
-
-            foreach (var user in users)
+            if (paginationDTO.RecordsPerPage == -1)
             {
-                var roleClaim = await context.UserClaims
-                    .Where(c => c.UserId == user.Id && c.ClaimType == "role")
-                    .Select(c => c.ClaimValue)
-                    .FirstOrDefaultAsync();
-
-                usersDTO.Add(new UsersDTO
-                {
-                    Id = user.Id,
-                    Email = user.Email,
-                    Role = roleClaim
-                });
+                return await context.Users
+                    .Select(u => new UsersDTO
+                    {
+                        Id = u.Id,
+                        Email = u.Email,
+                        Role = context.UserClaims
+                            .Where(c => c.UserId == u.Id && c.ClaimType == "role")
+                            .Select(c => c.ClaimValue)
+                            .FirstOrDefault()
+                    })
+                    .ToListAsync();
             }
+            else
+            {
+                var queryable = context.Users.AsQueryable();
 
-            // Add pagination metadata to response headers (optional)
-            Response.Headers.Add("X-Total-Count", totalRecords.ToString());
+                // Apply pagination manually
+                var totalRecords = await queryable.CountAsync();
+                var users = await queryable
+                    .Skip((paginationDTO.Page - 1) * paginationDTO.RecordsPerPage) // Skip the records based on page number
+                    .Take(paginationDTO.RecordsPerPage) // Take only the records per page
+                    .ToListAsync();
 
-            return usersDTO;
+                // Prepare the usersDTO list
+                var usersDTO = new List<UsersDTO>();
+
+                foreach (var user in users)
+                {
+                    var roleClaim = await context.UserClaims
+                        .Where(c => c.UserId == user.Id && c.ClaimType == "role")
+                        .Select(c => c.ClaimValue)
+                        .FirstOrDefaultAsync();
+
+                    usersDTO.Add(new UsersDTO
+                    {
+                        Id = user.Id,
+                        Email = user.Email,
+                        Role = roleClaim
+                    });
+                }
+
+                // Add pagination metadata to response headers (optional)
+                Response.Headers.Add("X-Total-Count", totalRecords.ToString());
+
+                return usersDTO;
+            }
         }
 
 

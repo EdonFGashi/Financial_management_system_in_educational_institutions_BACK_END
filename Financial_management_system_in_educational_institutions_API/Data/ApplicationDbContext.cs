@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Financial_management_system_in_educational_institutions_API.Models.Identity;
+using System.Security;
+using System.Xml;
 
 
 namespace Financial_management_system_in_educational_institutions_API.Data
@@ -44,6 +46,10 @@ namespace Financial_management_system_in_educational_institutions_API.Data
         public DbSet<StafiShkolles> tblStafiShkolles { get; set; }
         public DbSet<Ndalesat> tblNdalesat { get; set; }
 
+        public DbSet<RolePermissions> RolePermissions { get; set; }
+        public DbSet<Operations> Operations { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Apply default schema dynamically — applies to tenant tables
@@ -67,9 +73,10 @@ namespace Financial_management_system_in_educational_institutions_API.Data
             // ✅ Shared custom tables
             modelBuilder.Entity<Komuna>().ToTable("tblKomuna", "shared");
             modelBuilder.Entity<Account>().ToTable("tblAccounts", "shared");
-            
-            
-  
+
+            modelBuilder.Entity<Operations>().ToTable("Operations", "shared");
+            modelBuilder.Entity<RolePermissions>().ToTable("RolePermissions", "shared");
+
 
             // ✅ Tenant Tables (explicit schema)
             modelBuilder.Entity<Person>().ToTable("tblPersons", _schema);
@@ -160,7 +167,22 @@ namespace Financial_management_system_in_educational_institutions_API.Data
                 .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            
+
+           // modelBuilder.Entity<RolePermissions>()
+           //.HasOne(s => s.ClaimId)
+           //.WithMany()
+           //.HasForeignKey(s => s.ClaimId);
+
+            modelBuilder.Entity<RolePermissions>()
+                .HasOne(rp => rp.AspNetUserClaims)
+                .WithMany()                       // No reverse navigation in AppUserClaim
+                .HasForeignKey(rp => rp.ClaimId)
+                .IsRequired();
+
+//            modelBuilder.Entity<Permissions>().HasData(
+//    new Permissions { PermissionId = 1, Name = "Read Users", Verb = "GET", Resource = "Users" },
+//    new Permissions { PermissionId = 2, Name = "Create User", Verb = "POST", Resource = "Users" }
+//);
         }
     }
     }

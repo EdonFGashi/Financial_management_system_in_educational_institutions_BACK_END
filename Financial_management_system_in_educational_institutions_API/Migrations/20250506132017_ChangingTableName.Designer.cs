@@ -4,6 +4,7 @@ using Financial_management_system_in_educational_institutions_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Financial_management_system_in_educational_institutions_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250506132017_ChangingTableName")]
+    partial class ChangingTableName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -568,7 +571,7 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
                     b.HasKey("OperationId");
 
-                    b.ToTable("Operations", "shared");
+                    b.ToTable("Operations");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.OretShtese", b =>
@@ -819,13 +822,16 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                     b.Property<int>("OperationId")
                         .HasColumnType("int");
 
+                    b.Property<int>("OpetaionsOperationId")
+                        .HasColumnType("int");
+
                     b.HasKey("RolePermissionId");
 
                     b.HasIndex("ClaimId");
 
-                    b.HasIndex("OperationId");
+                    b.HasIndex("OpetaionsOperationId");
 
-                    b.ToTable("RolePermissions", "shared");
+                    b.ToTable("RolePermissions");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Shkolla", b =>
@@ -1175,21 +1181,21 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.RolePermissions", b =>
                 {
-                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserClaim", "AspNetUserClaims")
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserClaim", "AppUserClaim")
                         .WithMany()
                         .HasForeignKey("ClaimId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Operations", "Operations")
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Operations", "Opetaions")
                         .WithMany()
-                        .HasForeignKey("OperationId")
+                        .HasForeignKey("OpetaionsOperationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AspNetUserClaims");
+                    b.Navigation("AppUserClaim");
 
-                    b.Navigation("Operations");
+                    b.Navigation("Opetaions");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Shkolla", b =>
