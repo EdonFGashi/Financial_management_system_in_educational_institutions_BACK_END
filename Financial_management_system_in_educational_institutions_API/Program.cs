@@ -76,20 +76,36 @@ builder.Services.AddIdentity<AppUser, AppRole>()
     .AddDefaultTokenProviders();
 
 // -------------------- JWT AUTH --------------------
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddJwtBearer(options =>
+//    {
+//        options.TokenValidationParameters = new TokenValidationParameters
+//        {
+//            ValidateIssuer = false,
+//            ValidateAudience = false,
+//            ValidateLifetime = true,
+//            ValidateIssuerSigningKey = false,
+//            IssuerSigningKey = new SymmetricSecurityKey(
+//                Encoding.UTF8.GetBytes(configuration["keyjwt"])),
+//            ClockSkew = TimeSpan.Zero
+//        };
+//    });
+
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateLifetime = true,
-            ValidateIssuerSigningKey = false,
+            ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(configuration["keyjwt"])),
+                Encoding.UTF8.GetBytes("keyjwt")),
             ClockSkew = TimeSpan.Zero
         };
     });
+
 
 builder.Services.AddAuthorization(options =>
 {
@@ -117,7 +133,10 @@ if (app.Environment.IsDevelopment())
 app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthentication();
+app.UseMiddleware<RequestLoggingMiddleware>(); // custom logic      
+app.UseMiddleware<DynamicAuthorizationMiddleware>(); // custom logic
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();

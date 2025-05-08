@@ -211,6 +211,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         //}
 
         [HttpPost("create")]
+        [AllowAnonymous]
         public async Task<ActionResult<AuthenticationResponse>> Create([FromBody] RegisterUserCredentials userCredentials)
         {
 
@@ -232,6 +233,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<ActionResult<AuthenticationResponse>> Login(
             [FromBody] LoginUserCredentials userCredentials)
         {
