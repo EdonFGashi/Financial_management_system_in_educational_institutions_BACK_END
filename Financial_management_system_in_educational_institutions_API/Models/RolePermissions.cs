@@ -11,7 +11,7 @@ namespace Financial_management_system_in_educational_institutions_API.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RolePermissionId { get; set; }
         [ForeignKey("AspNetUserClaims")]
-        public int ClaimId { get; set; } // 👈 this fixes it
+        public int ClaimId { get; set; } 
 
         public AppUserClaim AspNetUserClaims { get; set; }
         [Required, ForeignKey("Operations")]

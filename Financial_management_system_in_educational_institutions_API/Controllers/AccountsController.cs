@@ -201,14 +201,14 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             return NoContent();
         }
 
-        [HttpPost("removeAdmin")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
-        public async Task<ActionResult> RemoveAdmin([FromBody] string userId)
-        {
-            var user = await userManager.FindByIdAsync(userId);
-            await userManager.RemoveClaimAsync(user, new Claim("role", "admin"));
-            return NoContent();
-        }
+        //[HttpPost("removeAdmin")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
+        //public async Task<ActionResult> RemoveAdmin([FromBody] string userId)
+        //{
+        //    var user = await userManager.FindByIdAsync(userId);
+        //    await userManager.RemoveClaimAsync(user, new Claim("role", "admin"));
+        //    return NoContent();
+        //}
 
         [HttpPost("create")]
         public async Task<ActionResult<AuthenticationResponse>> Create([FromBody] RegisterUserCredentials userCredentials)

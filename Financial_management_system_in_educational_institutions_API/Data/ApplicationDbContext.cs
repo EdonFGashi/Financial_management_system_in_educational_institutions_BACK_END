@@ -168,10 +168,13 @@ namespace Financial_management_system_in_educational_institutions_API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
 
-           // modelBuilder.Entity<RolePermissions>()
-           //.HasOne(s => s.ClaimId)
-           //.WithMany()
-           //.HasForeignKey(s => s.ClaimId);
+            // modelBuilder.Entity<RolePermissions>()
+            //.HasOne(s => s.ClaimId)
+            //.WithMany()
+            //.HasForeignKey(s => s.ClaimId);
+
+            modelBuilder.Entity<RolePermissions>()
+               .HasKey(rp => rp.RolePermissionId);
 
             modelBuilder.Entity<RolePermissions>()
                 .HasOne(rp => rp.AspNetUserClaims)
@@ -179,10 +182,17 @@ namespace Financial_management_system_in_educational_institutions_API.Data
                 .HasForeignKey(rp => rp.ClaimId)
                 .IsRequired();
 
-//            modelBuilder.Entity<Permissions>().HasData(
-//    new Permissions { PermissionId = 1, Name = "Read Users", Verb = "GET", Resource = "Users" },
-//    new Permissions { PermissionId = 2, Name = "Create User", Verb = "POST", Resource = "Users" }
-//);
+            modelBuilder.Entity<AppUserClaim>()
+                 .HasOne(c => c.AppUser)
+                 .WithMany()
+                 .HasForeignKey(c => c.UserId)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+
+            //            modelBuilder.Entity<Permissions>().HasData(
+            //    new Permissions { PermissionId = 1, Name = "Read Users", Verb = "GET", Resource = "Users" },
+            //    new Permissions { PermissionId = 2, Name = "Create User", Verb = "POST", Resource = "Users" }
+            //);
         }
     }
     }
