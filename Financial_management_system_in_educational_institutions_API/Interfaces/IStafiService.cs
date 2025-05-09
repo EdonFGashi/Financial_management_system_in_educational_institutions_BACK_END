@@ -7,11 +7,10 @@ namespace Financial_management_system_in_educational_institutions_API.Interfaces
 {
     public interface IStafiService
     {
-        Task<PaginatedResponse<StafiShkolles>> GetAllPaginatedAsync(string schemaName, PaginationDTO paginationDto);
-        Task<Response<List<StafiShkolles>>> GetAllAsync(string schemaName);
-        Task<Response<StafiShkolles>> GetByIdAsync(string schemaName, int id);
-        Task<Response<StafiShkolles>> CreateAsync(string schemaName, CreateStafiShkollesDto dto);
-        Task<Response<StafiShkolles>> UpdateAsync(string schemaName, int id, UpdateStafiShkollesDto dto);
-        Task<Response<string>> DeleteAsync(string schemaName, int id);
+        Task<PaginatedResponse<StafiShkollesDto>> GetAllPaginatedAsync(string schemaName, PaginationDTO paginationDto);
+        Task<Response<StafiShkollesDto>> GetByIdAsync(string schemaName, int id);
+        Task<Response<bool>> CreateAsync(string schemaName, CreateStafiShkollesDto dto);
+        Task<Response<bool>> UpdateAsync(string schemaName, int id, UpdateStafiShkollesDto dto);
+        Task<Response<bool>> DeleteAsync(string schemaName, int id);
     }
 }
