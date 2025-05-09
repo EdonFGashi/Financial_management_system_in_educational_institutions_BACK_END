@@ -16,7 +16,8 @@ using Financial_management_system_in_educational_institutions_API.DTOs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Financial_management_system_in_educational_institutions_API.Services;
+using Financial_management_system_in_educational_institutions_API.Interfaces;
+using Financial_management_system_in_educational_institutions_API.Services.Shared;
 
 namespace Financial_management_system_in_educational_institutions_API.Controllers
 {
@@ -30,7 +31,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
         private readonly TenantSchemaInitializer tenantSchemaInitializer;
-        private readonly ShkollaService shkollaService;
+        private readonly IShkollaService shkollaService;
         private readonly TenantKompaniaService tenantKompaniaService;
 
         private readonly DefaultRolePermissionsService defaultRolePermissionService;
@@ -44,7 +45,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             TenantSchemaInitializer tenantSchemaInitializer,
             TenantKompaniaService tenantKompaniaService,
             DefaultRolePermissionsService defaultRolePermissionsService,
-            ShkollaService shkollaService)
+            IShkollaService shkollaService)
             
         {
             this.userManager = userManager;

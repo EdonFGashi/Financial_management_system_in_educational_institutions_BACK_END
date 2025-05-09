@@ -5,7 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Financial_management_system_in_educational_institutions_API.Services
+namespace Financial_management_system_in_educational_institutions_API.Services.Shared
 {
     public class DynamicAuthorizationMiddleware
     {

@@ -21,13 +21,6 @@ public class StafiShkollesController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll([FromRoute] string schemaName)
-    {
-        var result = await _service.GetAllAsync(schemaName);
-        return StatusCode(result.StatusCode, result);
-    }
-
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] string schemaName, int id)
     {

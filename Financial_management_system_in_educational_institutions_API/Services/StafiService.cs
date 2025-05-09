@@ -134,26 +134,6 @@ public class StafiService : IStafiService
         return new Response<string>("Stafi u fshi me sukses", true);
     }
 
-    public async Task<Response<List<StafiShkolles>>> GetAllAsync(string schemaName)
-    {
-        await using var context = GetContext(schemaName);
-
-        try
-        {
-            var data = await context.tblStafiShkolles
-                .Include(s => s.Person)
-                .Include(s => s.Shkolla)
-                .ToListAsync();
-
-            return new Response<List<StafiShkolles>>(data, true, "Lista u kthye me sukses");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Gabim gjatë marrjes së listës së stafit për skemën '{Schema}'", schemaName);
-            return new Response<List<StafiShkolles>>(null).InternalServerError(ex.Message);
-        }
-    }
-
     public async Task<Response<StafiShkolles>> GetByIdAsync(string schemaName, int id)
     {
         await using var context = GetContext(schemaName);
