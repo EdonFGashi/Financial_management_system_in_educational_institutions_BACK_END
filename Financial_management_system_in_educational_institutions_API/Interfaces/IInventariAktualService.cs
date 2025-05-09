@@ -10,7 +10,6 @@ namespace Financial_management_system_in_educational_institutions_API.Interfaces
         Task<Response<bool>> CreateAsync(string schemaName, CreateInventariAktualDto dto);
         Task<Response<bool>> UpdateAsync(string schemaName, int id, UpdateInventariAktualDto dto);
         Task<Response<bool>> DeleteAsync(string schemaName, int id);
-        Task<Response<List<InventariAktualDto>>> GetAllAsync(string schemaName);
         Task<Response<InventariAktualDto>> GetByIdAsync(string schemaName, int id);
 
     }

@@ -151,27 +151,6 @@ namespace Financial_management_system_in_educational_institutions_API.Services
             }
         }
 
-        public async Task<Response<List<InventariAktualDto>>> GetAllAsync(string schemaName)
-        {
-            await using var context = GetContext(schemaName);
-
-            try
-            {
-                var data = await context.tblInventariAktual
-                    .Include(s => s.Shkolla)
-                    .ToListAsync();
-
-                var inventariDto = _mapper.Map<List<InventariAktualDto>>(data);
-
-                return new Response<List<InventariAktualDto>>(inventariDto, true, "Lista u kthye me sukses");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Gabim gjatë marrjes së listës së inventarit për skemën '{Schema}'", schemaName);
-                return new Response<List<InventariAktualDto>>(null).InternalServerError(ex.Message);
-            }
-        }
-
         public async Task<Response<InventariAktualDto>> GetByIdAsync(string schemaName, int id)
         {
             await using var context = GetContext(schemaName);
