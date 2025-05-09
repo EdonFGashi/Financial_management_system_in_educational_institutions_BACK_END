@@ -14,7 +14,10 @@ namespace Financial_management_system_in_educational_institutions_API.Models.Ide
         public Komuna? Komuna { get; set; }
     }
     public class AppRole : IdentityRole { }
-    public class AppUserClaim : IdentityUserClaim<string> { }
+    public class AppUserClaim : IdentityUserClaim<string> {
+        [ForeignKey(nameof(UserId))]
+        public AppUser AppUser { get; set; }
+    }
     public class AppUserLogin : IdentityUserLogin<string> { }
     public class AppUserRole : IdentityUserRole<string> { }
     public class AppRoleClaim : IdentityRoleClaim<string> { }

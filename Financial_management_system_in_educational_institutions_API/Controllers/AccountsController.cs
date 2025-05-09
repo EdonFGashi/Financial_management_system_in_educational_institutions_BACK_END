@@ -16,6 +16,7 @@ using Financial_management_system_in_educational_institutions_API.DTOs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Financial_management_system_in_educational_institutions_API.Services;
 
 namespace Financial_management_system_in_educational_institutions_API.Controllers
 {
@@ -32,6 +33,8 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         private readonly ShkollaService shkollaService;
         private readonly TenantKompaniaService tenantKompaniaService;
 
+        private readonly DefaultRolePermissionsService defaultRolePermissionService;
+
         public AccountsController(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
@@ -39,8 +42,11 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             ApplicationDbContext context,
             IMapper mapper,
             TenantSchemaInitializer tenantSchemaInitializer,
-            ShkollaService shkollaService,
-            TenantKompaniaService tenantKompaniaService)
+            TenantShkollaService tenantShkollaService,
+            TenantKompaniaService tenantKompaniaService,
+            DefaultRolePermissionsService defaultRolePermissionsService
+            ShkollaService shkollaService)
+            
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -50,6 +56,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             this.tenantSchemaInitializer = tenantSchemaInitializer;
             this.shkollaService = shkollaService;
             this.tenantKompaniaService = tenantKompaniaService;
+            this.defaultRolePermissionService = defaultRolePermissionsService;
         }
 
 
@@ -66,37 +73,54 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         [HttpPost("listUsers")]
         public async Task<ActionResult<List<UsersDTO>>> GetListUsers([FromBody] PaginationDTO paginationDTO)
         {
-            var queryable = context.Users.AsQueryable();
-
-            // Apply pagination manually
-            var totalRecords = await queryable.CountAsync();
-            var users = await queryable
-                .Skip((paginationDTO.Page - 1) * paginationDTO.RecordsPerPage) // Skip the records based on page number
-                .Take(paginationDTO.RecordsPerPage) // Take only the records per page
-                .ToListAsync();
-
-            // Prepare the usersDTO list
-            var usersDTO = new List<UsersDTO>();
-
-            foreach (var user in users)
+            if (paginationDTO.RecordsPerPage == -1)
             {
-                var roleClaim = await context.UserClaims
-                    .Where(c => c.UserId == user.Id && c.ClaimType == "role")
-                    .Select(c => c.ClaimValue)
-                    .FirstOrDefaultAsync();
-
-                usersDTO.Add(new UsersDTO
-                {
-                    Id = user.Id,
-                    Email = user.Email,
-                    Role = roleClaim
-                });
+                return await context.Users
+                    .Select(u => new UsersDTO
+                    {
+                        Id = u.Id,
+                        Email = u.Email,
+                        Role = context.UserClaims
+                            .Where(c => c.UserId == u.Id && c.ClaimType == "role")
+                            .Select(c => c.ClaimValue)
+                            .FirstOrDefault()
+                    })
+                    .ToListAsync();
             }
+            else
+            {
+                var queryable = context.Users.AsQueryable();
 
-            // Add pagination metadata to response headers (optional)
-            Response.Headers.Add("X-Total-Count", totalRecords.ToString());
+                // Apply pagination manually
+                var totalRecords = await queryable.CountAsync();
+                var users = await queryable
+                    .Skip((paginationDTO.Page - 1) * paginationDTO.RecordsPerPage) // Skip the records based on page number
+                    .Take(paginationDTO.RecordsPerPage) // Take only the records per page
+                    .ToListAsync();
 
-            return usersDTO;
+                // Prepare the usersDTO list
+                var usersDTO = new List<UsersDTO>();
+
+                foreach (var user in users)
+                {
+                    var roleClaim = await context.UserClaims
+                        .Where(c => c.UserId == user.Id && c.ClaimType == "role")
+                        .Select(c => c.ClaimValue)
+                        .FirstOrDefaultAsync();
+
+                    usersDTO.Add(new UsersDTO
+                    {
+                        Id = user.Id,
+                        Email = user.Email,
+                        Role = roleClaim
+                    });
+                }
+
+                // Add pagination metadata to response headers (optional)
+                Response.Headers.Add("X-Total-Count", totalRecords.ToString());
+
+                return usersDTO;
+            }
         }
 
 
@@ -104,7 +128,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
 
 
         [HttpPut("updateRole")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
         public async Task<IActionResult> UpdateUserRole([FromBody] UpdateRoleDTO dto)
         {
             var user = await userManager.FindByEmailAsync(dto.Email);
@@ -183,20 +207,19 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             return NoContent();
         }
 
-        [HttpPost("removeAdmin")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
-        public async Task<ActionResult> RemoveAdmin([FromBody] string userId)
-        {
-            var user = await userManager.FindByIdAsync(userId);
-            await userManager.RemoveClaimAsync(user, new Claim("role", "admin"));
-            return NoContent();
-        }
+        //[HttpPost("removeAdmin")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
+        //public async Task<ActionResult> RemoveAdmin([FromBody] string userId)
+        //{
+        //    var user = await userManager.FindByIdAsync(userId);
+        //    await userManager.RemoveClaimAsync(user, new Claim("role", "admin"));
+        //    return NoContent();
+        //}
 
         [HttpPost("create")]
+        [AllowAnonymous]
         public async Task<ActionResult<AuthenticationResponse>> Create([FromBody] RegisterUserCredentials userCredentials)
         {
-
-
             var user = new AppUser { UserName = userCredentials.Email, Email = userCredentials.Email };//e krijojme nje instance te IdentityUser dhe i japim emrin dhe emailin e perdoruesit
             var result = await userManager.CreateAsync(user, userCredentials.Password);//krijojme perdoruesin dhe i japim passwordin e tij
 
@@ -204,6 +227,8 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             {
                 // Add the role to Identity claims
                 await userManager.AddClaimAsync(user, new Claim("role", userCredentials.Role));
+
+                await defaultRolePermissionService.AssignDefaultPermissionsAsync(userCredentials.Role, user.Id);
 
                 return await BuildToken(user);
             }
@@ -214,6 +239,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<ActionResult<AuthenticationResponse>> Login(
             [FromBody] LoginUserCredentials userCredentials)
         {

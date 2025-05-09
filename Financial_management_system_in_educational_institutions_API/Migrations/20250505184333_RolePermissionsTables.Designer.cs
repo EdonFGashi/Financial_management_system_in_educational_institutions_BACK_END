@@ -4,6 +4,7 @@ using Financial_management_system_in_educational_institutions_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Financial_management_system_in_educational_institutions_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250505184333_RolePermissionsTables")]
+    partial class RolePermissionsTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -546,31 +549,6 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                     b.ToTable("tblNdarjetBuxhetit", "design");
                 });
 
-            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Operations", b =>
-                {
-                    b.Property<int>("OperationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OperationId"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Resource")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Verb")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("OperationId");
-
-                    b.ToTable("Operations", "shared");
-                });
-
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.OretShtese", b =>
                 {
                     b.Property<int>("Id")
@@ -642,6 +620,31 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                     b.HasIndex("PorositeId");
 
                     b.ToTable("tblPagesat", "design");
+                });
+
+            modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Permissions", b =>
+                {
+                    b.Property<int>("PermissionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PermissionId"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Resource")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Verb")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PermissionId");
+
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Person", b =>
@@ -816,16 +819,16 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
                     b.Property<int>("ClaimId")
                         .HasColumnType("int");
 
-                    b.Property<int>("OperationId")
+                    b.Property<int>("PermissionId")
                         .HasColumnType("int");
 
                     b.HasKey("RolePermissionId");
 
                     b.HasIndex("ClaimId");
 
-                    b.HasIndex("OperationId");
+                    b.HasIndex("PermissionId");
 
-                    b.ToTable("RolePermissions", "shared");
+                    b.ToTable("RolePermissions");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Shkolla", b =>
@@ -972,13 +975,11 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserClaim", b =>
                 {
-                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUser", "AppUser")
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserLogin", b =>
@@ -1177,21 +1178,21 @@ namespace Financial_management_system_in_educational_institutions_API.Migrations
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.RolePermissions", b =>
                 {
-                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserClaim", "AspNetUserClaims")
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Identity.AppUserClaim", "AppUserClaim")
                         .WithMany()
                         .HasForeignKey("ClaimId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Operations", "Operations")
+                    b.HasOne("Financial_management_system_in_educational_institutions_API.Models.Permissions", "Permissions")
                         .WithMany()
-                        .HasForeignKey("OperationId")
+                        .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AspNetUserClaims");
+                    b.Navigation("AppUserClaim");
 
-                    b.Navigation("Operations");
+                    b.Navigation("Permissions");
                 });
 
             modelBuilder.Entity("Financial_management_system_in_educational_institutions_API.Models.Shkolla", b =>
