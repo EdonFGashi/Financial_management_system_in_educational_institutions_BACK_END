@@ -1,6 +1,5 @@
 ﻿using Financial_management_system_in_educational_institutions_API.Data;
 using Financial_management_system_in_educational_institutions_API.DTOs;
-using Financial_management_system_in_educational_institutions_API.Models.Dto.Shkolla.Stafi;
 using Financial_management_system_in_educational_institutions_API.Models.Shared;
 using Financial_management_system_in_educational_institutions_API.Models;
 using Financial_management_system_in_educational_institutions_API.Multitenancy;
@@ -68,73 +67,88 @@ namespace Financial_management_system_in_educational_institutions_API.Services
             }
         }
 
-        public async Task<Response<InventariAktualDto>> CreateAsync(string schemaName, CreateStafiShkollesDto dto)
+        public async Task<Response<bool>> CreateAsync(string schemaName, CreateInventariAktualDto dto)
         {
             await using var context = GetContext(schemaName);
 
             try
             {
-                var shkollaExists = await context.tblShkolla.AnyAsync(s => s.shkollaId == dto.shkollaId);
+                var shkollaExists = await context.tblShkolla.AnyAsync(s => s.shkollaId == dto.ShkollaId);
                 if (!shkollaExists)
-                    return new Response<InventariAktualDto>(null).BadRequest("Shkolla nuk ekziston.");
+                    return new Response<bool>(false).BadRequest("Shkolla nuk ekziston.");
 
-                var stafi = new StafiShkolles
+                var inventari = new InventariAktual
                 {
-                    numriPersonal = dto.numriPersonal,
-                    pozita = dto.pozita,
-                    paga = dto.paga,
-                    numriOreve = dto.numriOreve,
-                    shkollaId = dto.shkollaId,
-                    createdAt = DateTime.UtcNow
+                    Emri = dto.Emri,
+                    Pershkrimi = dto.Pershkrimi,
+                    Sasia = dto.Sasia,
+                    Shifra = dto.Shifra,
+                    ShkollaId = dto.ShkollaId,
+                    CreatedAt = DateTime.UtcNow
                 };
 
-                context.tblStafiShkolles.Add(stafi);
+                context.tblInventariAktual.Add(inventari);
                 await context.SaveChangesAsync();
 
-                _logger.LogInformation("Stafi u krijua me sukses në skemën '{Schema}'", schemaName);
-                return new Response<InventariAktualDto>(stafi, true, "Stafi u krijua me sukses");
+                _logger.LogInformation("Inventari u krijua me sukses në skemën '{Schema}'", schemaName);
+                return new Response<bool>(true, true, "Inventari u krijua me sukses");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Gabim gjatë krijimit të stafit në skemën '{Schema}'", schemaName);
-                return new Response<InventariAktualDto>(null).InternalServerError(ex.Message);
+                _logger.LogError(ex, "Gabim gjatë krijimit të inventarit në skemën '{Schema}'", schemaName);
+                return new Response<bool>(false).InternalServerError(ex.Message);
             }
         }
 
-        public async Task<Response<InventariAktualDto>> UpdateAsync(string schemaName, int id, UpdateInventariAktualDto dto)
+        public async Task<Response<bool>> UpdateAsync(string schemaName, int id, UpdateInventariAktualDto dto)
         {
             await using var context = GetContext(schemaName);
 
-            var existing = await context.tblInventariAktual.FindAsync(id);
-            if (existing == null)
-                return new Response<InventariAktualDto>(null).NotFound("Stafi nuk u gjet");
+            try
+            {
+                var existing = await context.tblInventariAktual.FindAsync(id);
+                if (existing == null)
+                    return new Response<bool>(false).NotFound("Inventari nuk u gjet");
 
-            existing.Emri = dto.Emri;
-            existing.Pershkrimi = dto.Pershkrimi;
-            existing.Sasia = dto.Sasia;
-            existing.Shifra = dto.Shifra;
-            existing.ShkollaId = dto.ShkollaId;
-            existing.UpdatedAt = DateTime.UtcNow;
+                existing.Emri = dto.Emri;
+                existing.Pershkrimi = dto.Pershkrimi;
+                existing.Sasia = dto.Sasia;
+                existing.Shifra = dto.Shifra;
+                existing.ShkollaId = dto.ShkollaId;
+                existing.UpdatedAt = DateTime.UtcNow;
 
-            await context.SaveChangesAsync();
+                await context.SaveChangesAsync();
 
-            var existingDto = _mapper.Map<InventariAktualDto>(existing);
-            return new Response<InventariAktualDto>(existingDto, true, "Stafi u përditësua me sukses");
+                return new Response<bool>(true, true, "Inventari u përditësua me sukses");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Gabim gjatë përditësimit të inventarit me ID {Id} në skemën '{Schema}'", id, schemaName);
+                return new Response<bool>(false).InternalServerError(ex.Message);
+            }
         }
 
-        public async Task<Response<string>> DeleteAsync(string schemaName, int id)
+        public async Task<Response<bool>> DeleteAsync(string schemaName, int id)
         {
             await using var context = GetContext(schemaName);
 
-            var stafi = await context.tblStafiShkolles.FindAsync(id);
-            if (stafi == null)
-                return new Response<string>(null).NotFound("Stafi nuk u gjet");
+            try
+            {
+                var inventari = await context.tblInventariAktual.FindAsync(id);
+                if (inventari == null)
+                    return new Response<bool>(false).NotFound("Inventari nuk u gjet");
 
-            context.tblStafiShkolles.Remove(stafi);
-            await context.SaveChangesAsync();
+                context.tblInventariAktual.Remove(inventari);
+                await context.SaveChangesAsync();
 
-            _logger.LogInformation("Stafi me ID {Id} u fshi nga skema '{Schema}'", id, schemaName);
-            return new Response<string>("Stafi u fshi me sukses", true);
+                _logger.LogInformation("Inventari me ID {Id} u fshi nga skema '{Schema}'", id, schemaName);
+                return new Response<bool>(true, true, "Inventari aktual u fshi me sukses");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Gabim gjatë fshirjes së inventarit me ID {Id} në skemën '{Schema}'", id, schemaName);
+                return new Response<bool>(false).InternalServerError(ex.Message);
+            }
         }
 
         public async Task<Response<List<InventariAktualDto>>> GetAllAsync(string schemaName)
@@ -143,8 +157,7 @@ namespace Financial_management_system_in_educational_institutions_API.Services
 
             try
             {
-                var data = await context.tblStafiShkolles
-                    .Include(s => s.Person)
+                var data = await context.tblInventariAktual
                     .Include(s => s.Shkolla)
                     .ToListAsync();
 
@@ -154,7 +167,7 @@ namespace Financial_management_system_in_educational_institutions_API.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Gabim gjatë marrjes së listës së stafit për skemën '{Schema}'", schemaName);
+                _logger.LogError(ex, "Gabim gjatë marrjes së listës së inventarit për skemën '{Schema}'", schemaName);
                 return new Response<List<InventariAktualDto>>(null).InternalServerError(ex.Message);
             }
         }
@@ -163,16 +176,24 @@ namespace Financial_management_system_in_educational_institutions_API.Services
         {
             await using var context = GetContext(schemaName);
 
-            var inventari = await context.tblInventariAktual
-                .Include(s => s.Shkolla)
-                .FirstOrDefaultAsync(s => s.Id == id);
+            try
+            {
+                var inventari = await context.tblInventariAktual
+                    .Include(s => s.Shkolla)
+                    .FirstOrDefaultAsync(s => s.Id == id);
 
-            if (inventari == null)
-                return new Response<InventariAktualDto>(null).NotFound("Stafi nuk u gjet");
+                if (inventari == null)
+                    return new Response<InventariAktualDto>(null).NotFound("Inventari nuk u gjet");
 
-            var inventariDto = _mapper.Map<InventariAktualDto>(inventari);
+                var inventariDto = _mapper.Map<InventariAktualDto>(inventari);
 
-            return new Response<InventariAktualDto>(inventariDto, true, "Stafi u gjet me sukses");
+                return new Response<InventariAktualDto>(inventariDto, true, "Inventari u gjet me sukses");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Gabim gjatë marrjes së inventarit me ID {Id} në skemën '{Schema}'", id, schemaName);
+                return new Response<InventariAktualDto>(null).InternalServerError(ex.Message);
+            }
         }
     }
 }

@@ -2,6 +2,10 @@
 {
     public class CreateInventariAktualDto
     {
-
+        public string Emri {  get; set; }
+        public string? Pershkrimi { get; set; }
+        public int Sasia { get; set; }
+        public string Shifra { get; set; }
+        public int ShkollaId { get; set; }
     }
 }
