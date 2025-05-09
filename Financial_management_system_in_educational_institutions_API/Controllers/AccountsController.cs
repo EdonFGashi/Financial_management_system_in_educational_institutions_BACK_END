@@ -16,6 +16,7 @@ using Financial_management_system_in_educational_institutions_API.DTOs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Financial_management_system_in_educational_institutions_API.Services;
 
 namespace Financial_management_system_in_educational_institutions_API.Controllers
 {
@@ -32,6 +33,8 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         private readonly TenantShkollaService tenantShkollaService;
         private readonly TenantKompaniaService tenantKompaniaService;
 
+        private readonly DefaultRolePermissionsService defaultRolePermissionService;
+
         public AccountsController(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
@@ -40,7 +43,8 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             IMapper mapper,
             TenantSchemaInitializer tenantSchemaInitializer,
             TenantShkollaService tenantShkollaService,
-            TenantKompaniaService tenantKompaniaService)
+            TenantKompaniaService tenantKompaniaService,
+            DefaultRolePermissionsService defaultRolePermissionsService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -50,6 +54,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             this.tenantSchemaInitializer = tenantSchemaInitializer;
             this.tenantShkollaService = tenantShkollaService;
             this.tenantKompaniaService = tenantKompaniaService;
+            this.defaultRolePermissionService = defaultRolePermissionsService;
         }
 
 
@@ -121,7 +126,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
 
 
         [HttpPut("updateRole")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
         public async Task<IActionResult> UpdateUserRole([FromBody] UpdateRoleDTO dto)
         {
             var user = await userManager.FindByEmailAsync(dto.Email);
@@ -214,8 +219,6 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         [AllowAnonymous]
         public async Task<ActionResult<AuthenticationResponse>> Create([FromBody] RegisterUserCredentials userCredentials)
         {
-
-
             var user = new AppUser { UserName = userCredentials.Email, Email = userCredentials.Email };//e krijojme nje instance te IdentityUser dhe i japim emrin dhe emailin e perdoruesit
             var result = await userManager.CreateAsync(user, userCredentials.Password);//krijojme perdoruesin dhe i japim passwordin e tij
 
@@ -223,6 +226,8 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             {
                 // Add the role to Identity claims
                 await userManager.AddClaimAsync(user, new Claim("role", userCredentials.Role));
+
+                await defaultRolePermissionService.AssignDefaultPermissionsAsync(userCredentials.Role, user.Id);
 
                 return await BuildToken(user);
             }
