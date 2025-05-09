@@ -42,9 +42,8 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             ApplicationDbContext context,
             IMapper mapper,
             TenantSchemaInitializer tenantSchemaInitializer,
-            TenantShkollaService tenantShkollaService,
             TenantKompaniaService tenantKompaniaService,
-            DefaultRolePermissionsService defaultRolePermissionsService
+            DefaultRolePermissionsService defaultRolePermissionsService,
             ShkollaService shkollaService)
             
         {
