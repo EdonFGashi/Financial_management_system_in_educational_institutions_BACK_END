@@ -78,10 +78,11 @@ namespace Financial_management_system_in_educational_institutions_API.Data
 
             modelBuilder.Entity<Operations>().ToTable("Operations", "shared");
             modelBuilder.Entity<RolePermissions>().ToTable("RolePermissions", "shared");
+            modelBuilder.Entity<Person>().ToTable("tblPersons", "shared");
+
 
 
             // ✅ Tenant Tables (explicit schema)
-            modelBuilder.Entity<Person>().ToTable("tblPersons", _schema);
             modelBuilder.Entity<Produkti>().ToTable("Produkti",_schema);
             modelBuilder.Entity<Shkolla>().ToTable("tblShkolla", _schema);
             modelBuilder.Entity<Role>().ToTable("tblRoles", _schema);
