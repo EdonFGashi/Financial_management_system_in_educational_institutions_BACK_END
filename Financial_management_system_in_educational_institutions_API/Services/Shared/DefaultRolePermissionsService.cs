@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Financial_management_system_in_educational_institutions_API.Services
+namespace Financial_management_system_in_educational_institutions_API.Services.Shared
 {
     public class DefaultRolePermissionsService
     {
