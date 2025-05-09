@@ -1,4 +1,5 @@
-﻿using Financial_management_system_in_educational_institutions_API.Interfaces;
+﻿using Financial_management_system_in_educational_institutions_API.DTOs;
+using Financial_management_system_in_educational_institutions_API.Interfaces;
 using Financial_management_system_in_educational_institutions_API.Models.Dto.Shkolla.Stafi.OretShtese;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,14 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         {
             _service = service;
         }
+
+        [HttpGet("paginated")]
+        public async Task<IActionResult> GetPaginated([FromRoute] string schemaName, [FromQuery] PaginationDTO paginationDto)
+        {
+            var result = await _service.GetAllPaginatedAsync(schemaName, paginationDto);
+            return StatusCode(result.StatusCode, result);
+        }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] string schemaName, int id)
