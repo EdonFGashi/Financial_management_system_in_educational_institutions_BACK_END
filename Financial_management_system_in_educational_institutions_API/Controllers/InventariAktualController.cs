@@ -10,7 +10,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
     {
         private readonly IInventariAktualService _service;
 
-        public InventariAktualController(InventariAktualService service)
+        public InventariAktualController(IInventariAktualService service)
         {
             _service = service;
         }
