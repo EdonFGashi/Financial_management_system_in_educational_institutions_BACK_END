@@ -1,16 +1,24 @@
+﻿using Financial_management_system_in_educational_institutions_API.DTOs;
 using Financial_management_system_in_educational_institutions_API.Interfaces;
-using Financial_management_system_in_educational_institutions_API.Models.Dto.Shkolla;
+using Financial_management_system_in_educational_institutions_API.Models.Dto.Shkolla.Stafi;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/{schemaName}/[controller]")]
-public class ShkollaController : ControllerBase
+public class StafiShkollesController : ControllerBase
 {
-    private readonly IShkollaService _service;
+    private readonly IStafiService _service;
 
-    public ShkollaController(IShkollaService service)
+    public StafiShkollesController(IStafiService service)
     {
         _service = service;
+    }
+
+    [HttpGet("paginated")]
+    public async Task<IActionResult> GetPaginated([FromRoute] string schemaName, [FromQuery] PaginationDTO paginationDto)
+    {
+        var result = await _service.GetAllPaginatedAsync(schemaName, paginationDto);
+        return StatusCode(result.StatusCode, result);
     }
 
     [HttpGet]
@@ -28,14 +36,14 @@ public class ShkollaController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromRoute] string schemaName, [FromBody] ShkollaDto dto)
+    public async Task<IActionResult> Create([FromRoute] string schemaName, [FromBody] CreateStafiShkollesDto dto)
     {
         var result = await _service.CreateAsync(schemaName, dto);
         return StatusCode(result.StatusCode, result);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] string schemaName, int id, [FromBody] UpdateShkollaDto dto)
+    public async Task<IActionResult> Update([FromRoute] string schemaName, int id, [FromBody] UpdateStafiShkollesDto dto)
     {
         var result = await _service.UpdateAsync(schemaName, id, dto);
         return StatusCode(result.StatusCode, result);

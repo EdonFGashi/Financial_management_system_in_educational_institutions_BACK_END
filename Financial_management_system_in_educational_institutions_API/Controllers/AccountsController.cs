@@ -30,7 +30,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
         private readonly TenantSchemaInitializer tenantSchemaInitializer;
-        private readonly TenantShkollaService tenantShkollaService;
+        private readonly ShkollaService shkollaService;
         private readonly TenantKompaniaService tenantKompaniaService;
 
         private readonly DefaultRolePermissionsService defaultRolePermissionService;
@@ -44,7 +44,9 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             TenantSchemaInitializer tenantSchemaInitializer,
             TenantShkollaService tenantShkollaService,
             TenantKompaniaService tenantKompaniaService,
-            DefaultRolePermissionsService defaultRolePermissionsService)
+            DefaultRolePermissionsService defaultRolePermissionsService
+            ShkollaService shkollaService)
+            
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -52,7 +54,7 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
             this.context = context;
             this.mapper = mapper;
             this.tenantSchemaInitializer = tenantSchemaInitializer;
-            this.tenantShkollaService = tenantShkollaService;
+            this.shkollaService = shkollaService;
             this.tenantKompaniaService = tenantKompaniaService;
             this.defaultRolePermissionService = defaultRolePermissionsService;
         }
@@ -173,12 +175,11 @@ namespace Financial_management_system_in_educational_institutions_API.Controller
         }
 
         [HttpPost("register-shkolla")]
-        public async Task<IActionResult> RegisterShkolla([FromBody] RegisterShkollaDto dto)
-        {
-            var schemaName = GenerateSafeSchemaName(dto.Qyteti);
+        public async Task<IActionResult> RegisterShkolla([FromRoute] string schemaName, [FromBody] ShkollaDto dto)
+        { 
 
             // Call the service
-            await tenantShkollaService.AddSchoolWithDetailsAsync(schemaName, dto);
+            await shkollaService.CreateAsync(schemaName, dto);
 
             return Ok(new { message = "Shkolla created successfully" });
         }
