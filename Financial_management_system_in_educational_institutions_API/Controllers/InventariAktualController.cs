@@ -1,11 +1,12 @@
 ﻿using Financial_management_system_in_educational_institutions_API.DTOs;
 using Financial_management_system_in_educational_institutions_API.Interfaces;
 using Financial_management_system_in_educational_institutions_API.Models.Dto.Shkolla.Inventari;
-using Financial_management_system_in_educational_institutions_API.Models.Dto.Shkolla.Stafi;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Financial_management_system_in_educational_institutions_API.Controllers
 {
+    [ApiController]
+    [Route("api/{schemaName}/[controller]")]
     public class InventariAktualController : ControllerBase
     {
         private readonly IInventariAktualService _service;
